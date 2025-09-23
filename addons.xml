@@ -1,36 +1,20 @@
 <!-- run after every change -->
 <!-- md5sum addons.xml | awk '{ print $1 }' > addons.xml.md5 -->
 <addons>
-  <!-- Repository addon -->
-  <addon id="repository.kodi"
-         name="Davor's Kodi Repo"
-         version="0.1.0"
-         provider-name="Davor Dragic">
-    <extension point="xbmc.addon.repository" name="Davor's Kodi Repo">
-      <info compressed="false">https://davordragic.github.io/kodi-repo/addons.xml</info>
-      <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
-      <datadir zip="true">https://davordragic.github.io/kodi-repo/</datadir>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-      <summary lang="en">Davor's Kodi Addons</summary>
-      <description lang="en">Install and auto-update addons from Davor's repository.</description>
-      <platform>all</platform>
-    </extension>
-  </addon>
-
-  <!-- Your PVR addon -->
   <addon id="pvr.eon"
-         version="21.7.9"
          name="EON PVR Client"
-         provider-name="You">
+         version="21.7.9"
+         provider-name="Davor Dragic"
+         minversion="21.0.0">
     <requires>
-      <import addon="xbmc.pvr" version="7.0.0"/>
+      <import addon="xbmc.pvr" version="7.0.0" />
     </requires>
     <extension point="xbmc.pvrclient" library_linux_armv7="pvr.eon.so" />
     <extension point="xbmc.addon.metadata">
       <summary lang="en">EON PVR Client</summary>
       <description lang="en">Watch TV using EON PVR addon.</description>
       <platform>linux-armv7</platform>
+      <url>https://davordragic.github.io/kodi-repo/21.2.0/pvr.eon-21.7.9-linux-armv7a.zip</url>
     </extension>
   </addon>
 </addons>
