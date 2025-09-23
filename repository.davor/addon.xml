@@ -13,7 +13,7 @@
       <info>https://davordragic.github.io/kodi-repo/addons.xml</info>
       <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
       <datadir>https://davordragic.github.io/kodi-repo/addons</datadir>
-      <hashes>md5</hashes>
+      <hashes>false</hashes>
     </dir>
   </extension>
 
