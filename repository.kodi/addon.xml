@@ -1,0 +1,12 @@
+<addon id="repository.kodi" name="Kodi Repo" version="1.0.0" provider-name="Me">
+  <extension point="xbmc.addon.repository" name="Kodi Repo">
+    <info compressed="false">https://davordragic.github.io/kodi-repo/addons.xml</info>
+    <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
+    <datadir zip="true">https://davordragic.github.io/kodi-repo/</datadir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Kodi Repository</summary>
+    <description lang="en">Install and update addons from my Kodi repo</description>
+    <platform>all</platform>
+  </extension>
+</addon>

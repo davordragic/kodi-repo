@@ -1,0 +1,25 @@
+<addons>
+  <!-- Repository addon -->
+  <addon id="repository.kodi" name="Kodi Repo" version="1.0.0" provider-name="Me">
+    <extension point="xbmc.addon.repository" name="My Kodi Repo">
+      <info compressed="false">https://davordragic.github.io/kodi-repo/addons.xml</info>
+      <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
+      <datadir zip="true">https://davordragic.github.io/kodi-repo/</datadir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+      <summary lang="en">Kodi Repository</summary>
+      <description lang="en">Install and update addons from my Kodi repo</description>
+      <platform>all</platform>
+    </extension>
+  </addon>
+
+  <!-- Example addon (PVR EON) -->
+  <addon id="pvr.eon" name="EON PVR Client" version="21.7.9" provider-name="You">
+    <extension point="xbmc.pvrclient" library_android_arm="pvr.eon.so" />
+    <extension point="xbmc.addon.metadata">
+      <summary lang="en">EON PVR Client</summary>
+      <description lang="en">Watch TV using EON PVR addon</description>
+      <platform>android-armv7a</platform>
+    </extension>
+  </addon>
+</addons>
