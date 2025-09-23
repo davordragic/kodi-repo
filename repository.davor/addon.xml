@@ -11,8 +11,8 @@
 		<dir>
       <info>https://davordragic.github.io/kodi-repo/addons.xml</info>
       <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
-      <datadir>https://davordragic.github.io/kodi-repo/addons</datadir>
-			<hashes>sha256</hashes>
+      <datadir>https://davordragic.github.io/kodi-repo</datadir>
+			<hashes>md5</hashes>
 		</dir>
 	</extension>
 	<extension point="xbmc.addon.metadata">
