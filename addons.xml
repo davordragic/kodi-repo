@@ -1,6 +1,8 @@
+<!-- run after every change -->
+<!-- md5sum addons.xml | awk '{ print $1 }' > addons.xml.md5 -->
 <addons>
   <!-- Repository addon -->
-  <addon id="repository.kodi" name="Kodi Repo" version="1.0.0" provider-name="Me">
+  <addon id="repository.kodi" name="Kodi Repo" version="0.1.0" provider-name="Me">
     <extension point="xbmc.addon.repository" name="My Kodi Repo">
       <info compressed="false">https://davordragic.github.io/kodi-repo/addons.xml</info>
       <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
