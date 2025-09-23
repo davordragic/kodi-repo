@@ -449,7 +449,6 @@ def main():
         info_path = os.path.join(data_path, info_basename)
     else:
         info_path = os.path.expanduser(args.info)
-        print(args.checksum)
     checksum_path = (
         os.path.expanduser(args.checksum) if args.checksum is not None
         else '{}.md5'.format(info_path))
