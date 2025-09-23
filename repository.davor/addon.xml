@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.davor"
        name="Davor's Kodi Repo"
        version="0.1.0"
@@ -6,13 +6,17 @@
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
   </requires>
-  <extension point="xbmc.addon.repository" name="Davor's Kodi Repo">
+
+  <extension point="xbmc.addon.repository">
+    <!-- Do not forget to bump add-on version when changing paths to force a repo refresh -->
     <dir>
       <info>https://davordragic.github.io/kodi-repo/addons.xml</info>
       <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
-      <datadir>https://davordragic.github.io/kodi-repo/addons/</datadir>
+      <datadir>https://davordragic.github.io/kodi-repo/addons</datadir>
+      <hashes>md5</hashes>
     </dir>
   </extension>
+
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Repository for my personal Kodi add-ons</summary>
     <description lang="en">Auto-updates of the plugins I use</description>
