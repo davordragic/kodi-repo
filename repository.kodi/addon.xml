@@ -3,11 +3,10 @@
        version="0.1.0"
        provider-name="Davor Dragic">
 
-  <extension point="xbmc.addon.repository">
-    <dir info="https://davordragic.github.io/kodi-repo/addons.xml"
-         checksum="https://davordragic.github.io/kodi-repo/addons.xml.md5"
-         content="all"
-         platform="all" />
+  <extension point="xbmc.addon.repository" name="Davor's Kodi Repo">
+    <info compressed="false">https://davordragic.github.io/kodi-repo/addons.xml</info>
+    <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
+    <datadir zip="true">https://davordragic.github.io/kodi-repo/</datadir>
   </extension>
 
   <extension point="xbmc.addon.metadata">
