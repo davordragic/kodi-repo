@@ -26,5 +26,3 @@ v21.7.7
   - Fix refresh token when updating
 v21.7.8
   - New Setting filter for channel age rating
-v21.7.9
-  - Add bulgarian translation (Thx to CTEoloAH!)
