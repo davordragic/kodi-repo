@@ -33,4 +33,20 @@
     <disclaimer lang="en_US">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
     <disclaimer lang="bg_BG">Неофициална версия. Всички запазени марки принадлежат на EON. Използвайте на собствен риск.</disclaimer>
   </extension>
+</addon><addon id="repository.davor.org" name="Davor Add-on repository" version="1.0.0" provider-name="Davor Dragic">
+  <requires>
+    <import addon="xbmc.addon" version="12.0.0" />
+  </requires>
+	<extension point="xbmc.addon.repository">
+		
+		<dir>
+      <info>https://davordragic.github.io/kodi-repo/addons.xml</info>
+      <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
+      <datadir>https://davordragic.github.io/kodi-repo/addons</datadir>
+			<hashes>sha256</hashes>
+		</dir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+	</extension>
 </addon></addons>
