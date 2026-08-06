@@ -1,3 +1,9 @@
+v21.7.12
+  - Fix HLS manifest requests being blocked by CDN for non-smart-device user agents (#16)
+  - Add progress bar / timeline for live and replay/catchup playback
+  - Add seeking for standard ffmpegdirect replay/catchup via a local redirect proxy
+v21.7.11
+  - Maintenance release
 v21.5.0
 - Initial release
 v21.6.0
@@ -26,3 +32,5 @@ v21.7.7
   - Fix refresh token when updating
 v21.7.8
   - New Setting filter for channel age rating
+v21.7.9
+  - Add bulgarian translation (Thx to CTEoloAH!)
