@@ -1,3 +1,13 @@
+v21.8.4
+  - Test build: fix live TV starting at the beginning of the current show
+    instead of at "now" when tuning in; ffmpegdirect defaulted the catchup
+    playback offset to the start of the buffer, which is right for
+    replaying a selected past show but not for tuning into a live channel
+v21.8.3
+  - Test build: fix live TV rewind position drifting back towards "now"
+    instead of holding after a seek; is_realtime_stream was still true for
+    live, which paces playback by wall clock instead of by the seeked
+    position -- now false to match the catchup mode replay already used
 v21.8.2
   - Test build: fix displayed live TV position/progress fighting the real
     seeked position after a rewind (our own time reporting kept resetting
