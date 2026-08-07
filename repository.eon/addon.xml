@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.eon"
-		name="EON Kodi Repository"
-		version="1.0.1"
+		name="EON Add-on Repository"
+		version="1.0.2"
 		provider-name="Davor Dragic">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -17,7 +17,7 @@
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<platform>all</platform>
-		<summary lang="en_GB">EON Kodi Repository</summary>
+		<summary lang="en_GB">EON Add-on Repository</summary>
 		<description lang="en_GB">Repository for the EON PVR Client add-on.</description>
 	</extension>
 </addon>

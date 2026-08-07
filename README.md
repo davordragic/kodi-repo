@@ -1,4 +1,4 @@
-# EON Kodi Repository
+# EON Add-on Repository
 
 A personal Kodi add-on repository, served via GitHub Pages at:
 
@@ -30,11 +30,11 @@ Android TV), not on this machine.
 
 3. **Install the repository add-on from the zip**
    Add-ons → the box icon (bottom left) → **Install from zip file** → select
-   the `eon-repo` source → `repository.eon-1.0.1.zip`.
+   the `eon-repo` source → `repository.eon-1.0.2.zip`.
    Wait for the "Add-on installed" notification.
 
 4. **Install add-ons from the repository**
-   Add-ons → the box icon → **Install from repository** → **EON Kodi
+   Add-ons → the box icon → **Install from repository** → **EON Add-on
    Repository** → PVR clients → **EON PVR Client** → **Install**.
 
 5. **Configure the EON PVR Client**
