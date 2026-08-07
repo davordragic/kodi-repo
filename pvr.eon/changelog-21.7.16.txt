@@ -1,3 +1,13 @@
+v21.7.16
+  - Fix catchup seeking for real, take 2: the CDN rejects an encrypted
+    seek URL if its embedded ctime is more than ~20s old. The proxy
+    computed this once from a cached device-clock offset (confirmed via
+    a live 403 from the CDN: "Encrypted URL age exceeded"); it now fetches
+    server time fresh for every seek, matching the non-proxy path
+v21.7.15
+  - Fix catchup seeking for real: the seek proxy was calling GetServer()
+    independently of the original stream URL, which could select a
+    different CDN edge node and get seek requests rejected by it
 v21.7.14
   - Fix catchup seeking: StreamRedirectProxy no longer sends an incorrect
     "adaptive=true" flag that caused the CDN to silently reject seek
