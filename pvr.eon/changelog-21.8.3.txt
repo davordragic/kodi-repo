@@ -1,7 +1,6 @@
 v21.8.3
-  - Fix the same spurious "invalid_input" error dialog also appearing when
-    Kodi's background EPG grid refresh fails for a channel; one channel's
-    EPG failing isn't fatal, Kodi just shows no data for it and moves on
+  - Fix the same spurious "invalid_input" error dialog also appearing during
+    background EPG grid refresh
 v21.8.2
   - Add "ffmpegdirect Quality" setting (Default/Highest bitrate/Lowest
     bitrate) to pin stream quality instead of leaving it to ffmpeg's HLS
