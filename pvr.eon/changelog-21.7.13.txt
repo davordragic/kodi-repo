@@ -1,3 +1,5 @@
+v21.7.13
+  - Build for android-armv7 instead of android-aarch64 to match actual device architecture
 v21.7.12
   - Fix HLS manifest requests being blocked by CDN for non-smart-device user agents (#16)
   - Add progress bar / timeline for live and replay/catchup playback

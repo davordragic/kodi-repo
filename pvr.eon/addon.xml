@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.eon"
-  version="21.7.12"
+  version="21.7.13"
   name="EON PVR Client"
   provider-name="Nirvana">
   <requires>
@@ -16,7 +16,7 @@
   </requires>
   <extension point="kodi.pvrclient" library_android="libpvr.eon.so"/>
   <extension point="xbmc.addon.metadata">
-    <platform>android-aarch64</platform>
+    <platform>android-armv7</platform>
     <license>GPL-2.0-or-later</license>
     <source>https://github.com/nirvana-7777/pvr.eon</source>
     <forum>https://www.kodinerds.net/thread/77069-release-pvr-eon-tv</forum>
