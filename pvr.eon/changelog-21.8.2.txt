@@ -1,3 +1,16 @@
+v21.8.2
+  - Test build: add "ffmpegdirect Quality" setting (Default/Highest
+    bitrate/Lowest bitrate) to pin stream quality instead of leaving it to
+    ffmpeg's HLS demuxer default (which just opens whichever variant is
+    listed first in the master playlist, with no bandwidth awareness)
+  - Fix a spurious "invalid_input" error dialog appearing on some channel
+    switches when a best-effort EPG lookup (used for the live rewind
+    window) transiently fails; playback already fell back gracefully, the
+    dialog was just an unnecessary false alarm
+v21.8.1
+  - Add rewind (seeking) within the currently airing programme for live TV,
+    not just replay/catchup content
+  - Fix crash when returning to live TV after rewinding
 v21.8.0
   - Add progress bar and timeline for live TV and replay/catchup playback
   - Add seeking (fast-forward/rewind) for replay/catchup content
