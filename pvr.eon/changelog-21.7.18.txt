@@ -1,3 +1,16 @@
+v21.7.18
+  - Likely fix for both catchup seeking and intermittent live TV playback
+    failures: inputstream.ffmpegdirect uses ffmpeg's own native HTTP
+    client for the actual stream fetch, which falls back to Kodi's
+    generic User-Agent unless one is embedded in the URL via Kodi's
+    "|User-Agent=..." suffix convention -- confirmed via a server-side
+    verify-fetch returning "403 User agent blocked" (the same block
+    behind issue #16). Now set on the stream URL, default_url, and
+    catchup_url_format_string
+v21.7.17
+  - Debug build: adds a server-side verify-fetch of every seek URL
+    immediately after generating it, to see the CDN's real response
+    without the multi-second delay of manual log-then-replay testing
 v21.7.16
   - Fix catchup seeking for real, take 2: the CDN rejects an encrypted
     seek URL if its embedded ctime is more than ~20s old. The proxy
