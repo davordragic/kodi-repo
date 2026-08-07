@@ -83,7 +83,13 @@ To check immediately instead of waiting for the periodic check:
    new version. GitHub Pages doesn't generate real directory listings, so
    this hand-written `index.html` (and the root one) is what makes "Install
    from zip file" browsable in Kodi's file manager — see below.
-6. If you ever need to force every device to fully re-sync the repository
+6. Keep the last 5 published versions' zip/`.md5`/changelog files around in
+   `pvr.eon/` (and their archival copies in `source/`) for manual rollback,
+   pruning anything older. This is purely for manual "Install from zip
+   file" convenience -- `addons.xml` only ever lists one (the latest)
+   version regardless of how many old zips are sitting in the folder, so
+   the extra files have no effect on auto-update either way.
+7. If you ever need to force every device to fully re-sync the repository
    (not just get a new add-on version), bump `repository.eon`'s own
    `version` in `repository.eon/addon.xml`, rebuild its zip, and update the
    filename referenced in `index.html`. Kodi treats a version bump of the
