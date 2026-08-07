@@ -1,3 +1,7 @@
+v21.7.14
+  - Fix catchup seeking: StreamRedirectProxy no longer sends an incorrect
+    "adaptive=true" flag that caused the CDN to silently reject seek
+    requests, which made Kodi jump to the next EPG programme instead
 v21.7.13
   - Build for android-armv7 instead of android-aarch64 to match actual device architecture
 v21.7.12
