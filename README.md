@@ -65,3 +65,17 @@ the steps above. To check immediately instead of waiting:
    no manual "publish" step beyond the push.
 4. `addons.xml.md5` changing is the signal the update actually went live —
    check it at the URL above if in doubt.
+5. Update the zip filename referenced in `pvr.eon/index.html` to match the
+   new version. GitHub Pages doesn't generate real directory listings, so
+   this hand-written `index.html` (and the root one) is what makes "Install
+   from zip file" browsable in Kodi's file manager — see below.
+
+### Why there's a `.nojekyll` file and hand-written `index.html` files
+
+GitHub Pages runs everything through Jekyll by default, which auto-renders
+`README.md` as the site's `index.html` if no other index file exists — that
+replaces the real file listing with rendered prose that has no genuine links,
+which makes Kodi's HTTP directory browsing (Add source → Install from zip
+file) show up empty. `.nojekyll` disables that, and `index.html` /
+`pvr.eon/index.html` provide real `<a href>` listings that Kodi's file
+manager can actually parse and browse.
