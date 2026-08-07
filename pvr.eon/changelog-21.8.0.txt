@@ -1,19 +1,3 @@
-v21.8.3
-  - Test build: fix live TV rewind position drifting back towards "now"
-    instead of holding after a seek; is_realtime_stream was still true for
-    live, which paces playback by wall clock instead of by the seeked
-    position -- now false to match the catchup mode replay already used
-v21.8.2
-  - Test build: fix displayed live TV position/progress fighting the real
-    seeked position after a rewind (our own time reporting kept resetting
-    it back to "now"); ffmpegdirect's own catchup-mode time tracking is
-    now the sole source for live, matching what v21.8.1 already made work
-    mechanically under the hood
-v21.8.1
-  - Test build: live TV now uses the same catchup seek-proxy mechanism as
-    replay, using the current EPG programme as the rewind window, instead
-    of ffmpegdirect's local timeshift buffer (which could only rewind into
-    what had been buffered since tune-in)
 v21.8.0
   - Add progress bar and timeline for live TV and replay/catchup playback
   - Add seeking (fast-forward/rewind) for replay/catchup content
