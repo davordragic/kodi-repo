@@ -1,4 +1,4 @@
-v21.8.1
+v21.8.2
   - Add rewind (seeking) within the currently airing programme for live TV,
     not just replay/catchup content
 v21.8.0

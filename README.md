@@ -42,6 +42,12 @@ Android TV), not on this machine.
    platform (leave as default unless told otherwise). Then enable it under
    Settings → Player → TV.
 
+   **For seeking/rewind (live TV and replay/catchup) to work**, set
+   **"Select Inputstream"** to **`inputstream.ffmpegdirect`** (it defaults to
+   `inputstream.adaptive`, which doesn't support seeking with this add-on).
+   Make sure the `inputstream.ffmpegdirect` add-on is installed and enabled
+   too (Kodi should offer to install it automatically when you switch to it).
+
 ## Getting updates / auto-update
 
 Kodi periodically checks `addons.xml` on its own and installs updates for
