@@ -1,0 +1,2 @@
+[B]1.0.0[/B]
+• Initial release: fork of Estuary, restyled as a TiviMate-style live TV skin for the pvr.eon add-on
