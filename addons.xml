@@ -1,5 +1,23 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<addons><addon id="pvr.eon" version="21.8.4" name="EON PVR Client" provider-name="Nirvana">
+<addons><addon id="repository.eon" name="EON Add-on Repository" version="1.0.2" provider-name="Davor Dragic">
+  <requires>
+    <import addon="xbmc.addon" version="12.0.0" />
+  </requires>
+	<extension point="xbmc.addon.repository">
+		
+		<dir>
+      <info>https://davordragic.github.io/kodi-repo/addons.xml</info>
+      <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
+      <datadir>https://davordragic.github.io/kodi-repo</datadir>
+			<hashes>md5</hashes>
+		</dir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+		<summary lang="en_GB">EON Add-on Repository</summary>
+		<description lang="en_GB">Repository for the EON PVR Client add-on.</description>
+	</extension>
+</addon><addon id="pvr.eon" version="21.8.4" name="EON PVR Client" provider-name="Nirvana">
   <requires>
     
 <import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2" />
@@ -33,22 +51,30 @@
     <disclaimer lang="en_US">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
     <disclaimer lang="bg_BG">Неофициална версия. Всички запазени марки принадлежат на EON. Използвайте на собствен риск.</disclaimer>
   </extension>
-</addon><addon id="repository.eon" name="EON Add-on Repository" version="1.0.2" provider-name="Davor Dragic">
-  <requires>
-    <import addon="xbmc.addon" version="12.0.0" />
-  </requires>
-	<extension point="xbmc.addon.repository">
-		
-		<dir>
-      <info>https://davordragic.github.io/kodi-repo/addons.xml</info>
-      <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
-      <datadir>https://davordragic.github.io/kodi-repo</datadir>
-			<hashes>md5</hashes>
-		</dir>
+</addon><addon id="skin.eon" version="1.0.0" name="EON" provider-name="Davor Dragic">
+	<requires>
+		<import addon="xbmc.gui" version="5.17.0" />
+	</requires>
+	<extension point="xbmc.gui.skin" debugging="false">
+		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
+		<res width="1920" height="1280" aspect="3:2" default="false" folder="xml" />
+		<res width="1920" height="1200" aspect="16:10" default="false" folder="xml" />
+		<res width="2040" height="1080" aspect="17:9" default="false" folder="xml" />
+		<res width="1920" height="1080" aspect="16:9" default="true" folder="xml" />
+		<res width="2560" height="1080" aspect="21:9" default="false" folder="xml" />
+		<res width="2338" height="1080" aspect="19.5:9" default="false" folder="xml" />
+		<res width="2160" height="1080" aspect="18:9" default="false" folder="xml" />
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<platform>all</platform>
-		<summary lang="en_GB">EON Add-on Repository</summary>
-		<description lang="en_GB">Repository for the EON PVR Client add-on.</description>
+		<license>CC BY-SA 4.0, GNU GENERAL PUBLIC LICENSE Version 2.0</license>
+		<source>https://github.com/davordragic/skin.eon</source>
+		<assets>
+			<icon>icon.png</icon>
+			<fanart>fanart.jpg</fanart>
+		</assets>
+		<summary lang="en_GB">EON, a TiviMate-style live TV skin for Kodi</summary>
+		<description lang="en_GB">A fork of Kodi's Estuary skin, restyled as a dark, live-TV-first interface for the pvr.eon add-on: an EPG grid home screen with channel logos and a time-scrolling programme timeline, in the spirit of TiviMate.</description>
+		<disclaimer lang="en_GB">Unofficial. Based on Estuary, Kodi's default skin. Not affiliated with EON.tv or TiviMate.</disclaimer>
 	</extension>
 </addon></addons>
