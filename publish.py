@@ -12,7 +12,6 @@ built pvr.eon release.
 Usage:
     publish.py                                  # re-emit catalog as-is
     publish.py --pvr-zip /path/to/pvr.eon-X.Y.Z.zip
-    publish.py --skin-src /path/to/skin.eon      # override skin checkout
 """
 import argparse
 import contextlib
@@ -27,7 +26,6 @@ import xml.etree.ElementTree as ET
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent
 SOURCE_DIR = REPO_ROOT / "source"
-SKIN_DEFAULT_SRC = REPO_ROOT.parent / "skin.eon"
 
 ASSET_ORDER = ("addon.xml", "icon.png", "fanart.jpg", "LICENSE.txt")
 
@@ -51,10 +49,6 @@ def version_key(v):
 
 def locate_repository_eon(args):
     return REPO_ROOT / "repository.eon"
-
-
-def locate_skin_eon(args):
-    return pathlib.Path(args.skin_src).expanduser().resolve()
 
 
 def _pvr_source_version(path):
@@ -87,9 +81,6 @@ ADDONS = [
     Addon(id="repository.eon", keep=2, locate=locate_repository_eon,
           ignore=("*.zip", "*.zip.md5")),
     Addon(id="pvr.eon", keep=5, locate=locate_pvr_eon),
-    Addon(id="skin.eon", keep=3, locate=locate_skin_eon,
-          ignore=(".git", ".github", ".gitignore", ".DS_Store",
-                  "__pycache__", "*.pyc", "*.zip", "*.zip.md5")),
 ]
 
 
@@ -200,8 +191,6 @@ def rewrite_root_index(repo_eon_version):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pvr-zip", help="Path to a freshly built pvr.eon zip to publish")
-    parser.add_argument("--skin-src", default=str(SKIN_DEFAULT_SRC),
-                         help=f"Path to the skin.eon source checkout [{SKIN_DEFAULT_SRC}]")
     args = parser.parse_args()
 
     with contextlib.ExitStack() as stack:
