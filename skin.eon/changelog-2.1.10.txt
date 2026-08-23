@@ -1,3 +1,12 @@
+[B]2.1.10[/B]
+• Fixed buttons missing from several dialogs. A DialogButton hides itself when it has no label, because Kodi hides-but-does-not-label the buttons a dialog is not using - so any button I forgot to label vanished. The add-source dialog was missing Browse, Add and Remove, and the on-screen keyboard was missing OK, Cancel and IP address, which left no way to accept what you typed. Labels checked against Kodi's own skin, control by control, across every dialog in the skin
+• The validator now fails on a DialogButton with no label param, so a button cannot silently disappear again
+• A confirmation with no body text - the exit prompt is one - now says "Are you sure?" under its heading, instead of showing the heading alone with nothing to confirm
+
+[B]2.1.9[/B]
+• The rewind/forward amount now appears the instant you press, instead of a beat later. It was keyed on Player.SeekOffset, which Kodi only fills once the seek has been performed; the immediate value is Player.SeekStepSize, which is what Kodi's own skin shows. The time beside it jumps to the seek target on that same first press
+• The player controls now draw the same white seek marker the infobar does. Kodi only drives its 401/403 seek controls inside the infobar, so the marker here is fed from PVR.TimeShiftSeekbar on live TV and Player.Seekbar otherwise
+
 [B]2.1.8[/B]
 • Fixed seeking with the player controls open doing nothing at all. 2.1.7 sent the seek action to a single window, and Action(x,window) is delivered only to that window, which skips the global seek handler where seeking actually lives. Verified on a real box: a step back now reports -00:10 and commits
 • Fixed the infobar disappearing and coming straight back, over and over. Kodi restarts a skin timer the moment it stops if its start condition is still true, and "playback is playing" is always true - so the timer looped. It now runs for the length of playback and the infobar keys off the elapsed seconds
