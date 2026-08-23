@@ -54,7 +54,7 @@
       <disclaimer lang="hr_HR">Nije službena verzija. Svi zaštitni znakovi pripadaju EON-u. Koristite na vlastitu odgovornost.</disclaimer>
     </extension>
   </addon>
-  <addon id="skin.eon" version="2.1.6" name="EON PVR Skin" provider-name="Davor Dragic">
+  <addon id="skin.eon" version="2.1.7" name="EON PVR Skin" provider-name="Davor Dragic">
     <requires>
       <import addon="xbmc.gui" version="5.17.0" />
     </requires>
