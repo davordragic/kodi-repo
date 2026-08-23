@@ -1,3 +1,15 @@
+[B]2.2.0[/B]
+• No visible changes: this release is the skin rebuilt on shared building blocks, so the parts that have to look and behave alike no longer exist as separate copies that can drift apart. The on-screen keyboard, the infobar and the player controls are the ones that had copies
+• The infobar and the player controls now draw their seek marker, timeline labels, behind-live readout, seek amount, panel and REC/state icons from one definition each, instead of two that had to be edited in step
+• The on-screen keyboard's 59 keys come from two definitions rather than 59 hand-written blocks
+• Removed code nothing used any more: a leftover variable, a leftover parameter, and comments describing behaviour that had already been replaced
+• Texture generation runs 6x faster, and the validator and the publish script no longer trip over deprecations in newer Python
+
+[B]2.1.10[/B]
+• Fixed buttons missing from several dialogs. A DialogButton hides itself when it has no label, because Kodi hides-but-does-not-label the buttons a dialog is not using - so any button I forgot to label vanished. The add-source dialog was missing Browse, Add and Remove, and the on-screen keyboard was missing OK, Cancel and IP address, which left no way to accept what you typed. Labels checked against Kodi's own skin, control by control, across every dialog in the skin
+• The validator now fails on a DialogButton with no label param, so a button cannot silently disappear again
+• A confirmation with no body text - the exit prompt is one - now says "Are you sure?" under its heading, instead of showing the heading alone with nothing to confirm
+
 [B]2.1.9[/B]
 • The rewind/forward amount now appears the instant you press, instead of a beat later. It was keyed on Player.SeekOffset, which Kodi only fills once the seek has been performed; the immediate value is Player.SeekStepSize, which is what Kodi's own skin shows. The time beside it jumps to the seek target on that same first press
 • The player controls now draw the same white seek marker the infobar does. Kodi only drives its 401/403 seek controls inside the infobar, so the marker here is fed from PVR.TimeShiftSeekbar on live TV and Player.Seekbar otherwise

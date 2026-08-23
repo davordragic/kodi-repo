@@ -24,11 +24,15 @@ import subprocess
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
+import zipfile
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent
 SOURCE_DIR = REPO_ROOT / "source"
 
-ASSET_ORDER = ("addon.xml", "icon.png", "fanart.jpg", "LICENSE.txt")
+# The metadata files create_repository.py copies next to each zip, in the
+# order the generated index pages list them. addon.xml is always there;
+# these are optional.
+OPTIONAL_ASSETS = ("icon.png", "fanart.jpg", "LICENSE.txt")
 
 
 @dataclasses.dataclass
@@ -43,7 +47,7 @@ def version_key(v):
     """Sort key for 'MAJOR.MINOR.PATCH[-~+SUFFIX]' versions, newest first
     with reverse=True. A prerelease sorts just below its matching final
     release rather than crashing int() on the suffix."""
-    core = re.split(r"[-~+]", v, 1)[0]
+    core = re.split(r"[-~+]", v, maxsplit=1)[0]
     is_final = core == v
     return tuple(int(p) for p in core.split(".")) + (1 if is_final else 0,)
 
@@ -97,7 +101,6 @@ ADDONS = [
 def addon_version(location):
     if location.is_dir():
         return ET.parse(location / "addon.xml").getroot().get("version")
-    import zipfile
     with zipfile.ZipFile(location) as zf:
         for name in zf.namelist():
             if name.endswith("addon.xml"):
@@ -176,7 +179,7 @@ def rewrite_index(addon_id, kept_versions):
         "<body>", f"<h1>Index of /{addon_id}/</h1>", "<pre>",
         '<a href="addon.xml">addon.xml</a>',
     ]
-    for asset in ("icon.png", "fanart.jpg", "LICENSE.txt"):
+    for asset in OPTIONAL_ASSETS:
         if (directory / asset).exists():
             lines.append(f'<a href="{asset}">{asset}</a>')
     for i, v in enumerate(kept_versions):
