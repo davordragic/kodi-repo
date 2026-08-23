@@ -1,3 +1,19 @@
+[B]2.1.6[/B]
+• Fixed the shutdown menu doing nothing: its entries are the skin's to define, and the empty list meant the menu opened with nothing to focus and closed again at once
+• Fixed OK / Cancel / Set defaults in add-on settings being unreachable - nothing navigated to that row, and Kodi does not focus it on its own. Same fix in the channel manager
+• The player controls now close five seconds after the last keypress
+• While seeking with the controls open, the OSD shows the same running seek amount as the infobar, and it no longer hides "behind live" exactly when the timeline has focus
+• Two more validator checks, so these cannot come back unnoticed: handles that Kodi would scale off their background texture, and focusable controls that nothing navigates to
+
+[B]2.1.5[/B]
+• Fixed the huge white disc when the timeline is focused, and the thick white band while rewinding. Kodi sizes a slider nib and a progress handle by control-height / background-texture-height, so the 2px transparent background inflated a 12px handle to 72px - and on a progress control the same factor applies to width, which stretched it into a band across the bar. The marker is now a slider whose bar texture is the marker itself at alpha 00, exactly as Estuary does it
+• Fixed the live TV seek marker sitting in the wrong place: it was driven by control 402, which measures progress through the *programme*, on a bar that spans the timeshift window. It now uses 403, the timeshift seek position, which is the same scale as the bar
+• Fixed fast-forward and rewind in the player controls just pausing. Both fired PlayerControl(Play) first, and Play toggles pause
+• The seek offset (+3:00 and so on, as it adds up over several presses) is now large and accented, and "behind live" is no longer dim grey
+• The home menu is icons only, with no text
+• Removed the key-hint strip at the bottom of lists; the item counter stays
+• The player controls focus the button row rather than the play/pause button specifically - Kodi refuses to focus that button when the player reports no pause support, which left the controls with nothing focused
+
 [B]2.1.4[/B]
 • Fixed the remote being unable to move in the home menu and the player controls. Each entry is now a single control: wrapping a button inside a group meant the grouplist gave the navigation to the group and the button never got any
 • Home focuses the menu on open. It used to focus the channel list, and an empty list cannot take focus, so nothing was focused at all and every key did nothing

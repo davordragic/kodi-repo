@@ -6,6 +6,11 @@
 • The home menu is icons only, with no text
 • Removed the key-hint strip at the bottom of lists; the item counter stays
 • The player controls focus the button row rather than the play/pause button specifically - Kodi refuses to focus that button when the player reports no pause support, which left the controls with nothing focused
+• Fixed the shutdown menu doing nothing: its entries are the skin's to define, and the empty list meant the menu opened with nothing to focus and closed again at once
+• Fixed OK / Cancel / Set defaults in add-on settings being unreachable - nothing navigated to that row, and Kodi does not focus it on its own. Same fix in the channel manager
+• The player controls now close five seconds after the last keypress
+• While seeking with the controls open, the OSD shows the same running seek amount as the infobar, and it no longer hides "behind live" exactly when the timeline has focus
+• Two more validator checks, so these cannot come back unnoticed: handles that Kodi would scale off their background texture, and focusable controls that nothing navigates to
 
 [B]2.1.4[/B]
 • Fixed the remote being unable to move in the home menu and the player controls. Each entry is now a single control: wrapping a button inside a group meant the grouplist gave the navigation to the group and the button never got any
