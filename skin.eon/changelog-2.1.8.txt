@@ -1,3 +1,14 @@
+[B]2.1.8[/B]
+• Fixed seeking with the player controls open doing nothing at all. 2.1.7 sent the seek action to a single window, and Action(x,window) is delivered only to that window, which skips the global seek handler where seeking actually lives. Verified on a real box: a step back now reports -00:10 and commits
+• Fixed the infobar disappearing and coming straight back, over and over. Kodi restarts a skin timer the moment it stops if its start condition is still true, and "playback is playing" is always true - so the timer looped. It now runs for the length of playback and the infobar keys off the elapsed seconds
+• Fixed the player controls closing after about two seconds instead of five. The close is now driven purely by Kodi's own idle timer, which already restarts on every keypress, instead of a reset condition of the skin timer's own
+
+[B]2.1.7[/B]
+• Seeking with the player controls open now works exactly as it does with them closed: left/right run the same seek steps and show the same running -30 / -1:00 / -3:00 amount. It used to be a percentage scrub, because Kodi always consumes an arrow press inside the focused control, so the timeline itself now fires those seek actions
+• The controls open with the timeline focused, so arrows seek straight away; down reaches the buttons
+• The player overlays now sit on a light see-through panel, so the text reads over bright video without hiding the picture
+• The infobar appears for five seconds when playback starts, the same as it does when you change channel
+
 [B]2.1.6[/B]
 • Fixed the shutdown menu doing nothing: its entries are the skin's to define, and the empty list meant the menu opened with nothing to focus and closed again at once
 • Fixed OK / Cancel / Set defaults in add-on settings being unreachable - nothing navigated to that row, and Kodi does not focus it on its own. Same fix in the channel manager
