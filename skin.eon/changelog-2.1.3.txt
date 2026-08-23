@@ -1,0 +1,73 @@
+[B]2.1.3[/B]
+• Actually fixed the thick bar. An empty texture element does not override Defaults.xml, so every progress and slider kept drawing the default 9-sliced bar - on a 2px line its 6px corners became a slab. Those textures are now set explicitly
+• With the slab gone, the rewind colours are visible: accent up to where you are, bright white from there to live
+
+[B]2.1.2[/B]
+• Fixed the thick white slab over the timeline and its time labels: the seek slider's background was tinted to fully transparent, which Kodi drew as opaque white. It is left empty now, so only the 2px line shows
+
+[B]2.1.1[/B]
+• Timeline is thinner (2px) and now shows how far you have rewound: bright white between your position and live, accent for what you have watched, dim for the rest of the seekable window
+• Timeline segments are measured against the seekable window, which is what the bar spans - previously the played part used the programme's scale
+• "Watch channel" instead of "Watch live": that button tunes the channel regardless of which programme is selected, so the old label made no sense on a past programme
+
+[B]2.1.0[/B]
+• Timeline is now a thin white line with the played part in the accent colour, and the seek position is a small dot that only appears while seeking
+• Removed the rounded 9-sliced bars that were rendering as one solid block
+
+[B]2.0.9[/B]
+• Rebuilt the timeline: a hairline across the full width, rounded bars over it for buffered and played, and a handle that appears on the seek target while seeking
+• Same timeline in the infobar and in the player controls
+• Programme information: "Watch live" and "Play from beginning" instead of "Switch" and "Play programme", which read as the same thing
+
+[B]2.0.8[/B]
+• Thinner timeline (4px) and a much smaller seek handle
+• The timeline's end labels now show the seekable window, which is what the bar actually spans, instead of the programme times
+• Says LIVE at the live edge, or how far behind live you are, instead of a bare minus figure
+• Arrow seeking is visible again: the bar follows Kodi's own seek target and shows the offset while you tap left/right
+
+[B]2.0.7[/B]
+• The timeline can now be used: press up from the player buttons to focus it, then left/right to seek. Live TV scrubs the timeshift/catchup window, recordings and replay seek normally
+• The seek handle only stands out once the bar has focus
+
+[B]2.0.6[/B]
+• Add-on details: Settings, Dependencies, Update and Versions buttons are back - Kodi provides these controls but leaves their labels to the skin
+
+[B]2.0.5[/B]
+• Player buttons are half the size
+• Timeline shows real programme progress on live TV (it read as empty unless the stream happened to be timeshifting) and the seek handle only appears while seeking
+• Programme information from the guide shows Watch / Play / Record / Add timer / Find similar again - Kodi hides the ones that do not apply but leaves labelling to the skin
+
+[B]2.0.4[/B]
+• Sharper on high-resolution screens: every texture is now drawn at twice its on-screen size with finer antialiasing, so Kodi scales them down rather than up
+• Slovenian and Croatian translations
+
+[B]2.0.3[/B]
+• Player controls: programme information and the timeline now sit above the buttons
+• Slimmer timeline (6px) with a smaller accent handle instead of the thick white bar
+• Round player buttons drawn at full size, so their edges are clean
+• Dialog buttons Kodi has no use for are hidden instead of appearing as empty boxes - fixes the blank buttons in programme information and add-on details
+
+[B]2.0.2[/B]
+• Renamed to "EON PVR Skin" so it is recognisable in add-on lists
+• Guide: programme cells now stretch across their real duration instead of sitting as small boxes with gaps
+• Player controls rebuilt as a single row above the infobar - transport on the left, channels/guide/streams on the right; no more stray second line
+• Home menu reordered (Channels, Guide, Timers, Search, Settings) and widened so labels are not shortened
+• Toggle switches are positioned by Kodi again, so labels like "Auto-update" are no longer truncated
+• Add-on information uses Kodi's real button ids, so no more blank buttons
+
+[B]2.0.1[/B]
+• Guide: channels now run down the left with time across the top (was the other way round)
+• Fixed focus getting stuck: every dialog had an invisible full-screen button that could take focus, and several controls had no navigation at all
+• Fixed toggles being drawn over the start of their own label, which also truncated menu text
+• Channel/programme preview no longer renders as an empty box
+• Add-on information now shows summary, description and author
+• Scrollbars stay out of sight until focused
+• Startup screen hands over to the home window instead of sitting there
+• Removed Recordings from the home menu; Radio is hidden unless the backend has radio channels
+
+[B]2.0.0[/B]
+• Rewritten from scratch as a minimal, PVR-first skin - no longer an Estuary fork
+• Home screen is the channel list, with live preview and now/next programme info
+• Native EPG grid guide, restyled channel/recording/timer/search windows
+• Flat single-accent theme with four selectable accent colours (teal, blue, amber, violet)
+• Vector-generated textures and two bundled font weights only - small and fast to load

@@ -1,54 +1,89 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<addons><addon id="repository.eon" name="EON Add-on Repository" version="1.0.2" provider-name="Davor Dragic">
-  <requires>
-    <import addon="xbmc.addon" version="12.0.0" />
-  </requires>
-	<extension point="xbmc.addon.repository">
-		
-		<dir>
-      <info>https://davordragic.github.io/kodi-repo/addons.xml</info>
-      <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
-      <datadir>https://davordragic.github.io/kodi-repo</datadir>
-			<hashes>md5</hashes>
-		</dir>
-	</extension>
-	<extension point="xbmc.addon.metadata">
-		<platform>all</platform>
-		<summary lang="en_GB">EON Add-on Repository</summary>
-		<description lang="en_GB">Repository for the EON PVR Client add-on.</description>
-	</extension>
-</addon><addon id="pvr.eon" version="21.8.4" name="EON PVR Client" provider-name="Nirvana">
-  <requires>
-    
-<import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2" />
-<import addon="kodi.binary.global.general" minversion="1.0.4" version="1.0.5" />
-<import addon="kodi.binary.global.gui" minversion="5.15.0" version="5.15.0" />
-<import addon="kodi.binary.global.filesystem" minversion="1.1.7" version="1.1.9" />
-<import addon="kodi.binary.instance.pvr" minversion="8.2.0" version="8.3.0" />
-    <import addon="inputstream.adaptive" minversion="21.0.0" />
-    <import addon="script.module.inputstreamhelper" version="0.5.8" />
-  </requires>
-  <extension point="kodi.pvrclient" library_android="libpvr.eon.so" />
-  <extension point="xbmc.addon.metadata">
-    <platform>android-armv7</platform>
-    <license>GPL-2.0-or-later</license>
-    <source>https://github.com/nirvana-7777/pvr.eon</source>
-    <forum>https://www.kodinerds.net/thread/77069-release-pvr-eon-tv</forum>
-    <assets>
-      <icon>icon.png</icon>
-      <fanart>fanart.jpg</fanart>
-    </assets>
-    <summary lang="de_DE">EON PVR Client</summary>
-    <summary lang="en_GB">EON PVR Client</summary>
-    <summary lang="en_US">EON PVR Client</summary>
-    <summary lang="bg_BG">EON PVR Клиент</summary>
-    <description lang="de_DE">PVR-Client für Eon. Unterstützt TV, TV-Guide (EPG) und 7-Tage Replay</description>
-    <description lang="en_GB">PVR-Client for Eon. Supports TV, TV-Guide (EPG) and 7 day replay</description>
-    <description lang="en_US">PVR-Client for Eon. Supports TV, TV-Guide (EPG) and 7 day replay</description>
-    <description lang="bg_BG">PVR клиент за EON, който ви позволява да гледате на живо телевизионни канали, да слушате радиостанции и да превъртате до 7 дни назад</description>
-    <disclaimer lang="de_DE">Keine offizielle Version. Alle Warenzeichen verbleiben bei Eon. Benutzung auf eigene Gefahr.</disclaimer>
-    <disclaimer lang="en_GB">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
-    <disclaimer lang="en_US">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
-    <disclaimer lang="bg_BG">Неофициална версия. Всички запазени марки принадлежат на EON. Използвайте на собствен риск.</disclaimer>
-  </extension>
-</addon></addons>
+<addons>
+  <addon id="repository.eon" name="EON Add-on Repository" version="1.0.2" provider-name="Davor Dragic">
+    <requires>
+      <import addon="xbmc.addon" version="12.0.0" />
+    </requires>
+    <extension point="xbmc.addon.repository">
+      <dir>
+        <info>https://davordragic.github.io/kodi-repo/addons.xml</info>
+        <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
+        <datadir>https://davordragic.github.io/kodi-repo</datadir>
+        <hashes>md5</hashes>
+      </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+      <platform>all</platform>
+      <summary lang="en_GB">EON Add-on Repository</summary>
+      <summary lang="sl_SI">Repozitorij dodatkov EON</summary>
+      <summary lang="hr_HR">EON repozitorij dodataka</summary>
+      <description lang="en_GB">Repository for the EON PVR client and the EON skin.</description>
+      <description lang="sl_SI">Repozitorij za dodatek EON PVR odjemalec in preobleko EON.</description>
+      <description lang="hr_HR">Repozitorij za dodatak EON PVR klijent i presvlaku EON.</description>
+    </extension>
+  </addon>
+  <addon id="pvr.eon" version="21.8.4" name="EON PVR Client" provider-name="Nirvana">
+    <requires>
+      <import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2" />
+      <import addon="kodi.binary.global.general" minversion="1.0.4" version="1.0.5" />
+      <import addon="kodi.binary.global.gui" minversion="5.15.0" version="5.15.0" />
+      <import addon="kodi.binary.global.filesystem" minversion="1.1.7" version="1.1.9" />
+      <import addon="kodi.binary.instance.pvr" minversion="8.2.0" version="8.3.0" />
+      <import addon="inputstream.ffmpegdirect" minversion="21.0.0" />
+      <import addon="inputstream.adaptive" minversion="21.0.0" />
+      <import addon="script.module.inputstreamhelper" version="0.5.8" />
+    </requires>
+    <extension point="kodi.pvrclient" library_android="libpvr.eon.so" />
+    <extension point="xbmc.addon.metadata">
+      <platform>android-armv7</platform>
+      <license>GPL-2.0-or-later</license>
+      <source>https://github.com/nirvana-7777/pvr.eon</source>
+      <forum>https://www.kodinerds.net/thread/77069-release-pvr-eon-tv</forum>
+      <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+      </assets>
+      <summary lang="en_GB">EON PVR Client</summary>
+      <summary lang="sl_SI">EON PVR odjemalec</summary>
+      <summary lang="hr_HR">EON PVR klijent</summary>
+      <description lang="en_GB">PVR-Client for Eon. Supports TV, TV-Guide (EPG) and 7 day replay</description>
+      <description lang="sl_SI">PVR odjemalec za EON. Podpira televizijo v živo, TV-vodnik (EPG) in 7-dnevni ogled nazaj.</description>
+      <description lang="hr_HR">PVR klijent za EON. Podržava gledanje TV-a uživo, TV vodič (EPG) i 7-dnevni ponovni pregled.</description>
+      <disclaimer lang="en_GB">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
+      <disclaimer lang="sl_SI">Ni uradna različica. Vse blagovne znamke pripadajo EON. Uporaba na lastno odgovornost.</disclaimer>
+      <disclaimer lang="hr_HR">Nije službena verzija. Svi zaštitni znakovi pripadaju EON-u. Koristite na vlastitu odgovornost.</disclaimer>
+    </extension>
+  </addon>
+  <addon id="skin.eon" version="2.1.3" name="EON PVR Skin" provider-name="Davor Dragic">
+    <requires>
+      <import addon="xbmc.gui" version="5.17.0" />
+    </requires>
+    <extension point="xbmc.gui.skin" debugging="false">
+      <res width="1920" height="1080" aspect="16:9" default="true" folder="xml" />
+      <res width="1920" height="1200" aspect="16:10" default="false" folder="xml" />
+      <res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
+      <res width="2040" height="1080" aspect="17:9" default="false" folder="xml" />
+      <res width="2160" height="1080" aspect="18:9" default="false" folder="xml" />
+      <res width="2338" height="1080" aspect="19.5:9" default="false" folder="xml" />
+      <res width="2560" height="1080" aspect="21:9" default="false" folder="xml" />
+    </extension>
+    <extension point="xbmc.addon.metadata">
+      <platform>all</platform>
+      <license>GPL-2.0-or-later</license>
+      <source>https://github.com/davordragic/kodi-repo</source>
+      <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.png</fanart>
+      </assets>
+      <summary lang="en_GB">EON, a minimal live TV skin for Kodi</summary>
+      <summary lang="sl_SI">EON, minimalistična preobleka za televizijo v živo</summary>
+      <summary lang="hr_HR">EON, minimalistička presvlaka za gledanje TV-a uživo</summary>
+      <description lang="en_GB">A small, flat skin built around live TV: the home screen is the channel list with a live preview and now/next information, and the guide is Kodi's own EPG grid. Made to pair with the EON PVR client.</description>
+      <description lang="sl_SI">Majhna in ploska preobleka za televizijo v živo: začetni zaslon je seznam programov s predogledom v živo ter trenutno in naslednjo oddajo, TV-vodnik pa uporablja vgrajeno mrežo EPG. Namenjena uporabi z odjemalcem EON PVR.</description>
+      <description lang="hr_HR">Malena i plosnata presvlaka za gledanje TV-a uživo: početni zaslon je lista programa s pretpregledom uživo te trenutnom i sljedećom emisijom, a vodič koristi ugrađenu EPG mrežu. Namijenjena uporabi s dodatkom EON PVR klijent.</description>
+      <disclaimer lang="en_GB">Unofficial. Not affiliated with EON.tv.</disclaimer>
+      <disclaimer lang="sl_SI">Neuradna preobleka. Ni povezana z EON.tv.</disclaimer>
+      <disclaimer lang="hr_HR">Neslužbena presvlaka. Nije povezana s EON.tv.</disclaimer>
+    </extension>
+  </addon>
+</addons>

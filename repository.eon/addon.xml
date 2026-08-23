@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.eon"
-		name="EON Add-on Repository"
-		version="1.0.2"
-		provider-name="Davor Dragic">
+    name="EON Add-on Repository"
+    version="1.0.2"
+    provider-name="Davor Dragic">
   <requires>
     <import addon="xbmc.addon" version="12.0.0"/>
   </requires>
-	<extension point="xbmc.addon.repository">
-		<!-- Do not forget to bump add-on version when changing paths to force a repo refresh -->
-		<dir>
+  <extension point="xbmc.addon.repository">
+    <!-- Do not forget to bump add-on version when changing paths to force a repo refresh -->
+    <dir>
       <info>https://davordragic.github.io/kodi-repo/addons.xml</info>
       <checksum>https://davordragic.github.io/kodi-repo/addons.xml.md5</checksum>
       <datadir>https://davordragic.github.io/kodi-repo</datadir>
-			<hashes>md5</hashes>
-		</dir>
-	</extension>
-	<extension point="xbmc.addon.metadata">
-		<platform>all</platform>
-		<summary lang="en_GB">EON Add-on Repository</summary>
-		<description lang="en_GB">Repository for the EON PVR Client add-on.</description>
-	</extension>
+      <hashes>md5</hashes>
+    </dir>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary lang="en_GB">EON Add-on Repository</summary>
+    <summary lang="sl_SI">Repozitorij dodatkov EON</summary>
+    <summary lang="hr_HR">EON repozitorij dodataka</summary>
+    <description lang="en_GB">Repository for the EON PVR client and the EON skin.</description>
+    <description lang="sl_SI">Repozitorij za dodatek EON PVR odjemalec in preobleko EON.</description>
+    <description lang="hr_HR">Repozitorij za dodatak EON PVR klijent i presvlaku EON.</description>
+  </extension>
 </addon>

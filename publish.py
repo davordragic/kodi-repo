@@ -15,6 +15,7 @@ Usage:
 """
 import argparse
 import contextlib
+import hashlib
 import dataclasses
 import pathlib
 import re
@@ -51,6 +52,10 @@ def locate_repository_eon(args):
     return REPO_ROOT / "repository.eon"
 
 
+def locate_skin_eon(args):
+    return REPO_ROOT / "src" / "skin.eon"
+
+
 def _pvr_source_version(path):
     m = re.match(r"^pvr\.eon\.(.+)\.android\.armv7\.zip$", path.name)
     return m.group(1) if m else None
@@ -81,6 +86,11 @@ ADDONS = [
     Addon(id="repository.eon", keep=2, locate=locate_repository_eon,
           ignore=("*.zip", "*.zip.md5")),
     Addon(id="pvr.eon", keep=5, locate=locate_pvr_eon),
+    # The skin is built from source in src/skin.eon (a candidate for its own
+    # repository later); skin.eon/ holds only what gets published. tools/ is
+    # developer scripts, not part of the add-on.
+    Addon(id="skin.eon", keep=2, locate=locate_skin_eon,
+          ignore=("tools", "__pycache__", "*.zip", "*.zip.md5")),
 ]
 
 
@@ -107,6 +117,26 @@ def prepare_location(addon, args, stack):
         shutil.copytree(location, dest, ignore=shutil.ignore_patterns(*addon.ignore))
         return dest
     return location
+
+
+def normalise_catalog():
+    """Re-indent addons.xml and refresh its checksum.
+
+    create_repository.py appends each add-on's addon.xml verbatim, so the
+    catalog inherits whatever indentation each source file used and gets no
+    line break between </addon> and the next <addon>. Kodi does not care, but
+    anyone reading the file does -- and the checksum has to be recomputed
+    afterwards, because that is what devices compare against.
+    """
+    path = REPO_ROOT / "addons.xml"
+    tree = ET.parse(path)
+    ET.indent(tree, space="  ")
+    tree.write(path, encoding="UTF-8", xml_declaration=True)
+    digest = hashlib.md5(path.read_bytes()).hexdigest()
+    # Same layout as create_repository.py's generate_checksum() for a text file.
+    with open(REPO_ROOT / "addons.xml.md5", "w", newline="\n") as fh:
+        fh.write(f"{digest}  addons.xml\n")
+    print(f"addons.xml: re-indented, md5 {digest}")
 
 
 def prune(addon):
@@ -200,6 +230,8 @@ def main():
              *locations],
             cwd=REPO_ROOT, check=True,
         )
+
+    normalise_catalog()
 
     for addon in ADDONS:
         kept = prune(addon)
