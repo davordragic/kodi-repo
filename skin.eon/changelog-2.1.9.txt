@@ -1,3 +1,12 @@
+[B]2.1.9[/B]
+• The rewind/forward amount now appears the instant you press, instead of a beat later. It was keyed on Player.SeekOffset, which Kodi only fills once the seek has been performed; the immediate value is Player.SeekStepSize, which is what Kodi's own skin shows. The time beside it jumps to the seek target on that same first press
+• The player controls now draw the same white seek marker the infobar does. Kodi only drives its 401/403 seek controls inside the infobar, so the marker here is fed from PVR.TimeShiftSeekbar on live TV and Player.Seekbar otherwise
+
+[B]2.1.8[/B]
+• Fixed seeking with the player controls open doing nothing at all. 2.1.7 sent the seek action to a single window, and Action(x,window) is delivered only to that window, which skips the global seek handler where seeking actually lives. Verified on a real box: a step back now reports -00:10 and commits
+• Fixed the infobar disappearing and coming straight back, over and over. Kodi restarts a skin timer the moment it stops if its start condition is still true, and "playback is playing" is always true - so the timer looped. It now runs for the length of playback and the infobar keys off the elapsed seconds
+• Fixed the player controls closing after about two seconds instead of five. The close is now driven purely by Kodi's own idle timer, which already restarts on every keypress, instead of a reset condition of the skin timer's own
+
 [B]2.1.7[/B]
 • Seeking with the player controls open now works exactly as it does with them closed: left/right run the same seek steps and show the same running -30 / -1:00 / -3:00 amount. It used to be a percentage scrub, because Kodi always consumes an arrow press inside the focused control, so the timeline itself now fires those seek actions
 • The controls open with the timeline focused, so arrows seek straight away; down reaches the buttons
