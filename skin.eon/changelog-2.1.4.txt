@@ -1,3 +1,13 @@
+[B]2.1.4[/B]
+• Fixed the remote being unable to move in the home menu and the player controls. Each entry is now a single control: wrapping a button inside a group meant the grouplist gave the navigation to the group and the button never got any
+• Home focuses the menu on open. It used to focus the channel list, and an empty list cannot take focus, so nothing was focused at all and every key did nothing
+• The play/pause button shows its icon again (a radio texture cannot come from a variable, so it now uses the button's on/off states)
+• Timeline draws at 2px: a progress bar renders its fill at the texture's own height, so the fill now uses a 2px texture instead of a 16px one
+
+[B]2.1.3[/B]
+• Actually fixed the thick bar. An empty texture element does not override Defaults.xml, so every progress and slider kept drawing the default 9-sliced bar - on a 2px line its 6px corners became a slab. Those textures are now set explicitly
+• With the slab gone, the rewind colours are visible: accent up to where you are, bright white from there to live
+
 [B]2.1.2[/B]
 • Fixed the thick white slab over the timeline and its time labels: the seek slider's background was tinted to fully transparent, which Kodi drew as opaque white. It is left empty now, so only the 2px line shows
 
