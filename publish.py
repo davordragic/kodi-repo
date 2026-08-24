@@ -12,6 +12,7 @@ built pvr.eon release.
 Usage:
     publish.py                                  # re-emit catalog as-is
     publish.py --pvr-zip /path/to/pvr.eon-X.Y.Z.zip
+    publish.py --variant-zip /path/to/pvr.eon+osx-arm64-X.Y.Z.zip
 """
 import argparse
 import contextlib
@@ -32,8 +33,11 @@ SKIN_SOURCE = REPO_ROOT.parent / "skin.eon"
 
 # The metadata files create_repository.py copies next to each zip, in the
 # order the generated index pages list them. addon.xml is always there;
-# these are optional.
-OPTIONAL_ASSETS = ("icon.png", "fanart.jpg", "LICENSE.txt")
+# these are optional. Both fanart extensions appear because Kodi resolves
+# an add-on's <assets> against the datadir -- pvr.eon declares fanart.jpg,
+# skin.eon declares fanart.png, and whichever one is not copied out here
+# is a 404 on the add-on's info screen.
+OPTIONAL_ASSETS = ("icon.png", "fanart.jpg", "fanart.png", "LICENSE.txt")
 
 
 @dataclasses.dataclass
@@ -42,6 +46,9 @@ class Addon:
     keep: int
     locate: "callable"  # (args) -> pathlib.Path (a folder or a zip file)
     ignore: tuple = ()  # shutil.ignore_patterns() patterns, folders only
+    # Also publish any source/<id>+<platform>-<version>.zip builds as extra
+    # platform variants of this same add-on. See publish_variant().
+    variants: bool = False
 
 
 def version_key(v):
@@ -96,9 +103,16 @@ def locate_pvr_eon(args):
 # an add-on: append it here. Nothing else needs to change to keep it in
 # the published catalog going forward.
 ADDONS = [
+    # index.html is excluded because rewrite_index() regenerates it *after*
+    # create_repository.py has already built the zip: shipping it would embed
+    # a listing that is permanently one publish out of date, and would change
+    # the zip's checksum on every run for content that never differs.
     Addon(id="repository.eon", keep=2, locate=locate_repository_eon,
-          ignore=("*.zip", "*.zip.md5")),
-    Addon(id="pvr.eon", keep=5, locate=locate_pvr_eon),
+          ignore=("*.zip", "*.zip.md5", "index.html")),
+    # variants=True: pvr.eon is a binary add-on, so one build per platform.
+    # The primary (android-armv7) build keeps the plain pvr.eon/ layout; every
+    # other platform is published beside it by publish_variant().
+    Addon(id="pvr.eon", keep=5, locate=locate_pvr_eon, variants=True),
     # The skin is built from its own source tree beside this repository (see
     # locate_skin_eon); skin.eon/ here holds only what gets published. tools/ is
     # developer scripts, not part of the add-on.
@@ -110,14 +124,154 @@ ADDONS = [
 ]
 
 
+def zip_addon_root(zip_path):
+    """The <addon> element out of a zip's addon.xml, plus the name of the
+    zip's single top-level folder (the metadata files sit next to addon.xml
+    inside it)."""
+    with zipfile.ZipFile(zip_path) as zf:
+        names = [n for n in zf.namelist() if n.rsplit("/", 1)[-1] == "addon.xml"]
+        if not names:
+            raise RuntimeError(f"No addon.xml found in {zip_path}")
+        name = min(names, key=len)
+        return ET.fromstring(zf.read(name)), name.rpartition("/")[0]
+
+
 def addon_version(location):
     if location.is_dir():
         return ET.parse(location / "addon.xml").getroot().get("version")
-    with zipfile.ZipFile(location) as zf:
-        for name in zf.namelist():
-            if name.endswith("addon.xml"):
-                return ET.fromstring(zf.read(name)).get("version")
-    raise RuntimeError(f"No addon.xml found in {location}")
+    return zip_addon_root(location)[0].get("version")
+
+
+def addon_platform(root):
+    platform = root.findtext("./extension[@point='xbmc.addon.metadata']/platform")
+    return platform.strip() if platform else None
+
+
+@dataclasses.dataclass
+class Variant:
+    """One extra-platform build of an add-on that already publishes a primary
+    build under its plain <id>/ folder."""
+    addon_id: str
+    platform: str
+    version: str
+    root: object          # the <addon> element from this build's own addon.xml
+    zip_root: str         # name of the top-level folder inside the source zip
+    source: pathlib.Path
+
+    @property
+    def folder(self):
+        return f"{self.addon_id}+{self.platform}"
+
+    @property
+    def zip_name(self):
+        return f"{self.addon_id}-{self.version}.zip"
+
+    @property
+    def rel_path(self):
+        """What goes in <path>: relative to the repository's datadir."""
+        return f"{self.folder}/{self.zip_name}"
+
+
+def variant_builds(addon):
+    """The newest source/ build per extra platform for this add-on.
+
+    Platform and version are read from each build's own addon.xml, not parsed
+    back out of the filename -- platform strings contain hyphens themselves
+    ("osx-arm64"), so splitting "pvr.eon+osx-arm64-21.8.4.zip" apart is
+    guesswork. The filename only has to be good enough to find candidates.
+    """
+    if not addon.variants or not SOURCE_DIR.is_dir():
+        return []
+    newest = {}
+    for zip_path in sorted(SOURCE_DIR.glob(f"{addon.id}+*.zip")):
+        root, zip_root = zip_addon_root(zip_path)
+        platform = addon_platform(root)
+        if not platform:
+            sys.exit(f"{zip_path.name} declares no <platform>, so Kodi would have "
+                     f"no way to tell it apart from the primary build -- refusing "
+                     f"to publish it")
+        variant = Variant(addon.id, platform, root.get("version"), root,
+                          zip_root, zip_path)
+        current = newest.get(platform)
+        if current is None or version_key(variant.version) > version_key(current.version):
+            newest[platform] = variant
+    return [newest[p] for p in sorted(newest)]
+
+
+def write_zip_md5(path):
+    """Checksum file in create_repository.py generate_checksum()'s layout for
+    a binary file: digest, space, '*' marker, basename, UNIX line ending."""
+    digest = hashlib.md5(path.read_bytes()).hexdigest()
+    with open(f"{path}.md5", "w", newline="\n") as fh:
+        fh.write(f"{digest} *{path.name}\n")
+
+
+def publish_variant(variant):
+    """Lay a variant out the way Kodi's own binary add-on repository does:
+    <id>+<platform>/<id>-<version>.zip with the metadata files copied in
+    beside it -- Kodi resolves an add-on's artwork relative to the folder its
+    <path> points into, so the assets cannot be shared with the primary
+    build's folder. Returns the published zip's size, for <size>.
+    """
+    directory = REPO_ROOT / variant.folder
+    directory.mkdir(exist_ok=True)
+    archive = directory / variant.zip_name
+    archive.write_bytes(variant.source.read_bytes())
+    write_zip_md5(archive)
+    wanted = [(name, name) for name in ("addon.xml",) + OPTIONAL_ASSETS]
+    wanted.append(("changelog.txt", f"changelog-{variant.version}.txt"))
+    with zipfile.ZipFile(variant.source) as zf:
+        for source_name, target_name in wanted:
+            try:
+                data = zf.read(f"{variant.zip_root}/{source_name}")
+            except KeyError:
+                continue
+            (directory / target_name).write_bytes(data)
+    return archive.stat().st_size
+
+
+def ingest_variant_zips(paths):
+    """Archive freshly built extra-platform zips in source/ under the name
+    variant_builds() looks for, so a build only has to be handed to
+    publish.py once."""
+    for raw in paths:
+        source = pathlib.Path(raw).expanduser().resolve()
+        root, _ = zip_addon_root(source)
+        platform = addon_platform(root)
+        if not platform:
+            sys.exit(f"{source.name} declares no <platform> -- a platform variant "
+                     f"needs one so Kodi can tell the builds apart")
+        SOURCE_DIR.mkdir(exist_ok=True)
+        archived = SOURCE_DIR / f"{root.get('id')}+{platform}-{root.get('version')}.zip"
+        if archived.resolve() != source:
+            archived.write_bytes(source.read_bytes())
+        print(f"source/: archived {archived.name}")
+
+
+def append_variant_entries(published):
+    """Add one <addon> entry per variant to the catalog create_repository.py
+    just wrote, before normalise_catalog() re-indents it and recomputes the
+    checksum.
+
+    Two entries sharing an id AND a version is deliberate and is how Kodi
+    serves binary add-ons itself: <platform> makes Kodi drop the entries that
+    do not match the device (it filters them out while parsing addons.xml, so
+    the wrong build never reaches the add-on database), and <path> overrides
+    the default datadir/<id>/<id>-<version>.zip URL so the surviving entry
+    still resolves to its own zip. mirrors.kodi.tv/addons/omega ships
+    inputstream.adaptive 21.5.23 six times on exactly this basis.
+    """
+    if not published:
+        return
+    path = REPO_ROOT / "addons.xml"
+    tree = ET.parse(path)
+    for variant, size in published:
+        metadata = variant.root.find("./extension[@point='xbmc.addon.metadata']")
+        # Appended last, matching the order the official catalog uses.
+        ET.SubElement(metadata, "size").text = str(size)
+        ET.SubElement(metadata, "path").text = variant.rel_path
+        tree.getroot().append(variant.root)
+    tree.write(path, encoding="UTF-8", xml_declaration=True)
 
 
 def prepare_location(addon, args, stack):
@@ -154,23 +308,39 @@ def normalise_catalog():
     print(f"addons.xml: re-indented, md5 {digest}")
 
 
-def prune(addon):
-    """Delete this add-on's published files beyond the last `keep`
-    versions. Returns the kept versions, newest first."""
-    directory = REPO_ROOT / addon.id
+def prune_zips(directory, addon_id, keep):
+    """Delete published files in `directory` beyond the last `keep` versions
+    of `addon_id`. Returns the kept versions, newest first."""
     if not directory.is_dir():
         return []
-    pattern = re.compile(rf"^{re.escape(addon.id)}-(.+)\.zip$")
+    pattern = re.compile(rf"^{re.escape(addon_id)}-(.+)\.zip$")
     versions = sorted(
         {m.group(1) for f in directory.iterdir() if (m := pattern.match(f.name))},
         key=version_key,
         reverse=True,
     )
-    for old in versions[addon.keep:]:
-        for name in (f"{addon.id}-{old}.zip", f"{addon.id}-{old}.zip.md5",
+    for old in versions[keep:]:
+        for name in (f"{addon_id}-{old}.zip", f"{addon_id}-{old}.zip.md5",
                      f"changelog-{old}.txt"):
             (directory / name).unlink(missing_ok=True)
-    return versions[:addon.keep]
+    return versions[:keep]
+
+
+def prune(addon):
+    return prune_zips(REPO_ROOT / addon.id, addon.id, addon.keep)
+
+
+def prune_variant_source(addon, variants):
+    """Drop source/ builds for platforms we still publish, beyond the newest
+    `keep` of each -- publish_variant() only ever ships the newest."""
+    for variant in variants:
+        builds = []
+        for f in SOURCE_DIR.glob(f"{addon.id}+{variant.platform}-*.zip"):
+            root, _ = zip_addon_root(f)
+            if addon_platform(root) == variant.platform:
+                builds.append((version_key(root.get("version")), f))
+        for _, f in sorted(builds, reverse=True)[addon.keep:]:
+            f.unlink()
 
 
 def prune_pvr_source(kept_versions):
@@ -183,12 +353,16 @@ def prune_pvr_source(kept_versions):
             f.unlink()
 
 
-def rewrite_index(addon_id, kept_versions):
-    directory = REPO_ROOT / addon_id
+def rewrite_index(addon_id, kept_versions, folder=None):
+    """`folder` differs from `addon_id` for platform variants, whose folder
+    carries a +<platform> suffix while the zips inside keep the plain
+    <id>-<version>.zip name Kodi builds by default."""
+    folder = folder or addon_id
+    directory = REPO_ROOT / folder
     lines = [
         "<!DOCTYPE html>", "<html>",
-        f"<head><title>Index of /{addon_id}/</title></head>",
-        "<body>", f"<h1>Index of /{addon_id}/</h1>", "<pre>",
+        f"<head><title>Index of /{folder}/</title></head>",
+        "<body>", f"<h1>Index of /{folder}/</h1>", "<pre>",
         '<a href="addon.xml">addon.xml</a>',
     ]
     for asset in OPTIONAL_ASSETS:
@@ -218,6 +392,12 @@ def rewrite_root_index(repo_eon_version):
     for addon in ADDONS:
         if addon.id != "repository.eon":
             lines.append(f'<a href="{addon.id}/">{addon.id}/</a>')
+        # Globbed off disk rather than taken from the variants we just
+        # published, so a platform folder still gets listed once its source
+        # build has aged out of source/.
+        for directory in sorted(REPO_ROOT.glob(f"{addon.id}+*")):
+            if directory.is_dir():
+                lines.append(f'<a href="{directory.name}/">{directory.name}/</a>')
     lines += ["</pre>", "</body>", "</html>", ""]
     (REPO_ROOT / "index.html").write_text("\n".join(lines))
 
@@ -236,7 +416,14 @@ def rewrite_root_index(repo_eon_version):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pvr-zip", help="Path to a freshly built pvr.eon zip to publish")
+    parser.add_argument("--variant-zip", action="append", default=[], metavar="ZIP",
+                        help="Path to a build of an add-on for a platform other than "
+                             "its primary one, e.g. the macOS pvr.eon build. Archived "
+                             "in source/ and published beside the primary build. "
+                             "Repeatable.")
     args = parser.parse_args()
+
+    ingest_variant_zips(args.variant_zip)
 
     with contextlib.ExitStack() as stack:
         locations = [str(prepare_location(a, args, stack)) for a in ADDONS]
@@ -246,6 +433,11 @@ def main():
             cwd=REPO_ROOT, check=True,
         )
 
+    # Must land after create_repository.py has rewritten addons.xml from
+    # scratch, and before normalise_catalog() checksums it.
+    published = [(v, publish_variant(v)) for a in ADDONS for v in variant_builds(a)]
+    append_variant_entries(published)
+
     normalise_catalog()
 
     for addon in ADDONS:
@@ -254,6 +446,13 @@ def main():
         print(f"{addon.id}: kept {kept}")
         if addon.id == "pvr.eon":
             prune_pvr_source(kept)
+        variants = [v for v, _ in published if v.addon_id == addon.id]
+        prune_variant_source(addon, variants)
+        for variant in variants:
+            variant_kept = prune_zips(REPO_ROOT / variant.folder, addon.id, addon.keep)
+            rewrite_index(addon.id, variant_kept, folder=variant.folder)
+            print(f"{variant.folder}: kept {variant_kept}, catalogued "
+                  f"{variant.version} at {variant.rel_path}")
 
     repo_eon_version = ET.parse(REPO_ROOT / "repository.eon" / "addon.xml").getroot().get("version")
     rewrite_root_index(repo_eon_version)

@@ -82,6 +82,7 @@ METADATA_BASENAMES = (
     INFO_BASENAME,
     'icon.png',
     'fanart.jpg',
+    'fanart.png',
     'LICENSE.txt')
 
 

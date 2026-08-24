@@ -11,6 +11,13 @@ A personal Kodi add-on repository, served via GitHub Pages at:
 | [`pvr.eon`](pvr.eon) | EON.tv PVR client (live TV, EPG, replay/catchup) |
 | [`skin.eon`](skin.eon) | EON skin -- a minimal, PVR-first interface built to pair with it |
 
+`pvr.eon` is a binary add-on, so it is published once per platform: **Android
+armv7** (in [`pvr.eon`](pvr.eon)) and **macOS arm64** (in
+[`pvr.eon+osx-arm64`](pvr.eon+osx-arm64)). Kodi picks the right one by itself --
+each build declares which platform it is for and Kodi ignores catalog entries
+that do not match the device it is running on -- so the install steps below are
+the same on every device.
+
 Check the current live version at any time:
 - Full catalog: https://davordragic.github.io/repository.eon/addons.xml
 - Checksum only: https://davordragic.github.io/repository.eon/addons.xml.md5
@@ -119,6 +126,43 @@ fails soft on all of those (a typo just leaves part of the screen blank).
 `make_textures.py` regenerates every PNG in `../skin.eon/media/`, plus
 `icon.png` and `fanart.png`, from the vector definitions in that script -- the
 artwork is never hand-edited.
+
+### Adding a build for another platform
+
+`pvr.eon` ships one binary per platform. Hand a new build to `publish.py` once
+and it is archived in `source/` and re-published from then on:
+
+```
+python3 publish.py --variant-zip ~/pvr.eon+osx-arm64-21.8.5.zip
+```
+
+The primary platform (Android armv7) keeps the plain `pvr.eon/` layout. Every
+other platform gets a `pvr.eon+<platform>/` folder holding
+`pvr.eon-<version>.zip` and a copy of the metadata files, plus a second
+`<addon>` entry in `addons.xml` carrying the **same id and version** as the
+primary one. That duplication is deliberate, and is how Kodi serves its own
+binary add-ons: `<platform>` makes Kodi discard the entries that do not match
+the device while it is parsing `addons.xml`, so the wrong build never reaches
+its database, and `<path>` overrides the default `<id>/<id>-<version>.zip` URL
+so the entry that does survive still resolves to its own zip. The official
+`mirrors.kodi.tv/addons/omega` catalog lists `inputstream.adaptive` six times
+per version on exactly this basis.
+
+The metadata files are copied into each platform folder rather than shared with
+`pvr.eon/`, because Kodi resolves an add-on's artwork relative to the folder
+its `<path>` points into.
+
+Platform and version are read from each build's own `addon.xml`, never parsed
+out of its filename -- platform strings contain hyphens themselves, so
+splitting `pvr.eon+osx-arm64-21.8.4.zip` back apart is guesswork. The platform
+it declares does have to be one Kodi recognises (`osx-arm64`, `osx-x86_64`,
+`android-aarch64`, `windows-x86_64`, ...); an unrecognised string makes the
+add-on invisible on every device instead of just the wrong ones.
+
+Note the flip side of that filtering: the Android build declares
+`android-armv7`, which a 64-bit Kodi does **not** accept. If a device stops
+offering the PVR client after a Kodi reinstall, check whether it is now running
+the arm64 APK -- that needs an `android-aarch64` build published here.
 
 ### Forcing a full re-sync on already-installed devices
 

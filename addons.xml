@@ -86,4 +86,41 @@
       <disclaimer lang="hr_HR">Neslužbena presvlaka. Nije povezana s EON.tv.</disclaimer>
     </extension>
   </addon>
+  <addon id="pvr.eon" version="21.8.4" name="EON PVR Client" provider-name="Nirvana">
+    <requires>
+      <import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2" />
+      <import addon="kodi.binary.global.general" minversion="1.0.4" version="1.0.5" />
+      <import addon="kodi.binary.global.gui" minversion="5.15.0" version="5.15.0" />
+      <import addon="kodi.binary.global.filesystem" minversion="1.1.7" version="1.1.9" />
+      <import addon="kodi.binary.instance.pvr" minversion="8.2.0" version="8.3.0" />
+      <import addon="inputstream.ffmpegdirect" minversion="21.0.0" />
+      <import addon="inputstream.adaptive" minversion="21.0.0" />
+      <import addon="script.module.inputstreamhelper" version="0.5.8" />
+    </requires>
+    <extension point="kodi.pvrclient" library_osx="pvr.eon.21.8.4.dylib" />
+    <extension point="xbmc.addon.metadata">
+      <platform>osx-arm64</platform>
+      <license>GPL-2.0-or-later</license>
+      <source>https://github.com/nirvana-7777/pvr.eon</source>
+      <forum>https://www.kodinerds.net/thread/77069-release-pvr-eon-tv</forum>
+      <assets>
+        <icon>icon.png</icon>
+        <fanart>fanart.jpg</fanart>
+      </assets>
+      <summary lang="de_DE">EON PVR Client</summary>
+      <summary lang="en_GB">EON PVR Client</summary>
+      <summary lang="en_US">EON PVR Client</summary>
+      <summary lang="bg_BG">EON PVR Клиент</summary>
+      <description lang="de_DE">PVR-Client für Eon. Unterstützt TV, TV-Guide (EPG) und 7-Tage Replay</description>
+      <description lang="en_GB">PVR-Client for Eon. Supports TV, TV-Guide (EPG) and 7 day replay</description>
+      <description lang="en_US">PVR-Client for Eon. Supports TV, TV-Guide (EPG) and 7 day replay</description>
+      <description lang="bg_BG">PVR клиент за EON, който ви позволява да гледате на живо телевизионни канали, да слушате радиостанции и да превъртате до 7 дни назад</description>
+      <disclaimer lang="de_DE">Keine offizielle Version. Alle Warenzeichen verbleiben bei Eon. Benutzung auf eigene Gefahr.</disclaimer>
+      <disclaimer lang="en_GB">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
+      <disclaimer lang="en_US">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
+      <disclaimer lang="bg_BG">Неофициална версия. Всички запазени марки принадлежат на EON. Използвайте на собствен риск.</disclaimer>
+      <size>243333</size>
+      <path>pvr.eon+osx-arm64/pvr.eon-21.8.4.zip</path>
+    </extension>
+  </addon>
 </addons>
