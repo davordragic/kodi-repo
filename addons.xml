@@ -54,7 +54,7 @@
       <disclaimer lang="hr_HR">Neslužbena presvlaka. Nije povezana s EON.tv.</disclaimer>
     </extension>
   </addon>
-  <addon id="pvr.eon" version="21.8.5" name="EON PVR Client" provider-name="Nirvana">
+  <addon id="pvr.eon" version="21.8.6" name="EON PVR Client" provider-name="Nirvana">
     <requires>
       <import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2" />
       <import addon="kodi.binary.global.general" minversion="1.0.4" version="1.0.5" />
@@ -87,11 +87,11 @@
       <disclaimer lang="en_GB">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
       <disclaimer lang="en_US">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
       <disclaimer lang="bg_BG">Неофициална версия. Всички запазени марки принадлежат на EON. Използвайте на собствен риск.</disclaimer>
-      <size>280922</size>
-      <path>pvr.eon+android-armv7/pvr.eon-21.8.5.zip</path>
+      <size>282533</size>
+      <path>pvr.eon+android-armv7/pvr.eon-21.8.6.zip</path>
     </extension>
   </addon>
-  <addon id="pvr.eon" version="21.8.5" name="EON PVR Client" provider-name="Nirvana">
+  <addon id="pvr.eon" version="21.8.6" name="EON PVR Client" provider-name="Nirvana">
     <requires>
       <import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2" />
       <import addon="kodi.binary.global.general" minversion="1.0.4" version="1.0.5" />
@@ -102,7 +102,7 @@
       <import addon="inputstream.adaptive" minversion="21.0.0" />
       <import addon="script.module.inputstreamhelper" version="0.5.8" />
     </requires>
-    <extension point="kodi.pvrclient" library_osx="pvr.eon.21.8.5.dylib" />
+    <extension point="kodi.pvrclient" library_osx="pvr.eon.21.8.6.dylib" />
     <extension point="xbmc.addon.metadata">
       <platform>osx-arm64</platform>
       <license>GPL-2.0-or-later</license>
@@ -124,8 +124,8 @@
       <disclaimer lang="en_GB">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
       <disclaimer lang="en_US">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
       <disclaimer lang="bg_BG">Неофициална версия. Всички запазени марки принадлежат на EON. Използвайте на собствен риск.</disclaimer>
-      <size>235010</size>
-      <path>pvr.eon+osx-arm64/pvr.eon-21.8.5.zip</path>
+      <size>236464</size>
+      <path>pvr.eon+osx-arm64/pvr.eon-21.8.6.zip</path>
     </extension>
   </addon>
 </addons>
