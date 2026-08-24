@@ -6,13 +6,13 @@ its command line, so every publish must pass every add-on we ever want
 listed -- a run that publishes just one add-on would silently drop the
 others out of the catalog. ADDONS below is that single source of truth;
 running this script with no arguments re-emits the whole catalog from
-current sources, and passing --pvr-zip additionally ingests a freshly
-built pvr.eon release.
+current sources, and passing --variant-zip additionally ingests a freshly
+built per-platform binary, such as a new pvr.eon release.
 
 Usage:
     publish.py                                  # re-emit catalog as-is
-    publish.py --pvr-zip /path/to/pvr.eon-X.Y.Z.zip
     publish.py --variant-zip /path/to/pvr.eon+osx-arm64-X.Y.Z.zip
+    publish.py --variant-zip /path/to/pvr.eon+android-armv7-X.Y.Z.zip
 """
 import argparse
 import contextlib
@@ -44,11 +44,19 @@ OPTIONAL_ASSETS = ("icon.png", "fanart.jpg", "fanart.png", "LICENSE.txt")
 class Addon:
     id: str
     keep: int
-    locate: "callable"  # (args) -> pathlib.Path (a folder or a zip file)
+    # (args) -> pathlib.Path (a folder or a zip file). Unused, and may be None,
+    # when variants_only is set: there is no single source to hand over.
+    locate: "callable" = None
     ignore: tuple = ()  # shutil.ignore_patterns() patterns, folders only
-    # Also publish any source/<id>+<platform>-<version>.zip builds as extra
-    # platform variants of this same add-on. See publish_variant().
+    # Publish every source/<id>+<platform>-<version>.zip build as a platform
+    # variant of this add-on. See publish_variant().
     variants: bool = False
+    # This add-on exists ONLY as per-platform builds, so it has no source to
+    # give create_repository.py and no plain <id>/ folder: every build lives in
+    # its own <id>+<platform>/ folder and every catalog entry carries a <path>.
+    # Kodi is fine with that -- it filters on <platform> while parsing
+    # addons.xml, so a device only ever sees the one entry that fits it.
+    variants_only: bool = False
 
 
 def version_key(v):
@@ -76,29 +84,6 @@ def locate_skin_eon(args):
     return location
 
 
-def _pvr_source_version(path):
-    m = re.match(r"^pvr\.eon\.(.+)\.android\.armv7\.zip$", path.name)
-    return m.group(1) if m else None
-
-
-def locate_pvr_eon(args):
-    if args.pvr_zip:
-        zip_path = pathlib.Path(args.pvr_zip).expanduser().resolve()
-        version = addon_version(zip_path)
-        SOURCE_DIR.mkdir(exist_ok=True)
-        archived = SOURCE_DIR / f"pvr.eon.{version}.android.armv7.zip"
-        if not archived.exists():
-            archived.write_bytes(zip_path.read_bytes())
-        return zip_path
-    candidates = [
-        p for p in SOURCE_DIR.glob("pvr.eon.*.android.armv7.zip")
-        if _pvr_source_version(p)
-    ]
-    if not candidates:
-        sys.exit("No pvr.eon zip in source/ and no --pvr-zip given")
-    return max(candidates, key=lambda p: version_key(_pvr_source_version(p)))
-
-
 # Every entry here is passed to create_repository.py on EVERY run. Adding
 # an add-on: append it here. Nothing else needs to change to keep it in
 # the published catalog going forward.
@@ -109,10 +94,14 @@ ADDONS = [
     # the zip's checksum on every run for content that never differs.
     Addon(id="repository.eon", keep=2, locate=locate_repository_eon,
           ignore=("*.zip", "*.zip.md5", "index.html")),
-    # variants=True: pvr.eon is a binary add-on, so one build per platform.
-    # The primary (android-armv7) build keeps the plain pvr.eon/ layout; every
-    # other platform is published beside it by publish_variant().
-    Addon(id="pvr.eon", keep=5, locate=locate_pvr_eon, variants=True),
+    # pvr.eon is a binary add-on: one build per platform and no platform-
+    # neutral build to treat as canonical, so every platform gets its own
+    # pvr.eon+<platform>/ folder and there is no plain pvr.eon/ at all.
+    # Publishing one of them under the bare id would have made that platform
+    # silently privileged -- it alone would resolve through Kodi's default
+    # <id>/<id>-<version>.zip URL -- and reading the catalog would not show
+    # which one it was.
+    Addon(id="pvr.eon", keep=2, variants=True, variants_only=True),
     # The skin is built from its own source tree beside this repository (see
     # locate_skin_eon); skin.eon/ here holds only what gets published. tools/ is
     # developer scripts, not part of the add-on.
@@ -149,8 +138,8 @@ def addon_platform(root):
 
 @dataclasses.dataclass
 class Variant:
-    """One extra-platform build of an add-on that already publishes a primary
-    build under its plain <id>/ folder."""
+    """One per-platform build of an add-on, published in its own
+    <id>+<platform>/ folder and reached through a <path> in the catalog."""
     addon_id: str
     platform: str
     version: str
@@ -188,8 +177,8 @@ def variant_builds(addon):
         platform = addon_platform(root)
         if not platform:
             sys.exit(f"{zip_path.name} declares no <platform>, so Kodi would have "
-                     f"no way to tell it apart from the primary build -- refusing "
-                     f"to publish it")
+                     f"no way to tell it apart from this add-on's other builds "
+                     f"-- refusing to publish it")
         variant = Variant(addon.id, platform, root.get("version"), root,
                           zip_root, zip_path)
         current = newest.get(platform)
@@ -210,8 +199,8 @@ def publish_variant(variant):
     """Lay a variant out the way Kodi's own binary add-on repository does:
     <id>+<platform>/<id>-<version>.zip with the metadata files copied in
     beside it -- Kodi resolves an add-on's artwork relative to the folder its
-    <path> points into, so the assets cannot be shared with the primary
-    build's folder. Returns the published zip's size, for <size>.
+    <path> points into, so the assets cannot be shared between platform
+    folders. Returns the published zip's size, for <size>.
     """
     directory = REPO_ROOT / variant.folder
     directory.mkdir(exist_ok=True)
@@ -343,18 +332,8 @@ def prune_variant_source(addon, variants):
             f.unlink()
 
 
-def prune_pvr_source(kept_versions):
-    if not SOURCE_DIR.is_dir():
-        return
-    keep = set(kept_versions)
-    for f in list(SOURCE_DIR.glob("pvr.eon.*.android.armv7.zip")):
-        version = _pvr_source_version(f)
-        if version is not None and version not in keep:
-            f.unlink()
-
-
 def rewrite_index(addon_id, kept_versions, folder=None):
-    """`folder` differs from `addon_id` for platform variants, whose folder
+    """`folder` differs from `addon_id` for platform builds, whose folder
     carries a +<platform> suffix while the zips inside keep the plain
     <id>-<version>.zip name Kodi builds by default."""
     folder = folder or addon_id
@@ -390,7 +369,7 @@ def rewrite_root_index(repo_eon_version):
         '<a href="addons.xml.md5">addons.xml.md5</a>',
     ]
     for addon in ADDONS:
-        if addon.id != "repository.eon":
+        if addon.id != "repository.eon" and not addon.variants_only:
             lines.append(f'<a href="{addon.id}/">{addon.id}/</a>')
         # Globbed off disk rather than taken from the variants we just
         # published, so a platform folder still gets listed once its source
@@ -415,18 +394,22 @@ def rewrite_root_index(repo_eon_version):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--pvr-zip", help="Path to a freshly built pvr.eon zip to publish")
+    parser.add_argument("--pvr-zip", metavar="ZIP",
+                        help="Deprecated alias for --variant-zip, kept because the "
+                             "Android build used to be published as pvr.eon's one "
+                             "canonical build rather than as a platform variant")
     parser.add_argument("--variant-zip", action="append", default=[], metavar="ZIP",
-                        help="Path to a build of an add-on for a platform other than "
-                             "its primary one, e.g. the macOS pvr.eon build. Archived "
-                             "in source/ and published beside the primary build. "
+                        help="Path to a per-platform build of an add-on, e.g. the "
+                             "macOS or Android pvr.eon build. Archived in source/ "
+                             "and published into its own <id>+<platform>/ folder. "
                              "Repeatable.")
     args = parser.parse_args()
 
-    ingest_variant_zips(args.variant_zip)
+    ingest_variant_zips(args.variant_zip + ([args.pvr_zip] if args.pvr_zip else []))
 
     with contextlib.ExitStack() as stack:
-        locations = [str(prepare_location(a, args, stack)) for a in ADDONS]
+        locations = [str(prepare_location(a, args, stack))
+                     for a in ADDONS if not a.variants_only]
         subprocess.run(
             [sys.executable, "create_repository.py", "--datadir=.", "--no-parallel",
              *locations],
@@ -441,11 +424,10 @@ def main():
     normalise_catalog()
 
     for addon in ADDONS:
-        kept = prune(addon)
-        rewrite_index(addon.id, kept)
-        print(f"{addon.id}: kept {kept}")
-        if addon.id == "pvr.eon":
-            prune_pvr_source(kept)
+        if not addon.variants_only:
+            kept = prune(addon)
+            rewrite_index(addon.id, kept)
+            print(f"{addon.id}: kept {kept}")
         variants = [v for v, _ in published if v.addon_id == addon.id]
         prune_variant_source(addon, variants)
         for variant in variants:

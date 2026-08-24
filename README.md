@@ -8,15 +8,18 @@ A personal Kodi add-on repository, served via GitHub Pages at:
 
 | Add-on | Description |
 |---|---|
-| [`pvr.eon`](pvr.eon) | EON.tv PVR client (live TV, EPG, replay/catchup) |
+| `pvr.eon` | EON.tv PVR client (live TV, EPG, replay/catchup) |
 | [`skin.eon`](skin.eon) | EON skin -- a minimal, PVR-first interface built to pair with it |
 
-`pvr.eon` is a binary add-on, so it is published once per platform: **Android
-armv7** (in [`pvr.eon`](pvr.eon)) and **macOS arm64** (in
-[`pvr.eon+osx-arm64`](pvr.eon+osx-arm64)). Kodi picks the right one by itself --
-each build declares which platform it is for and Kodi ignores catalog entries
-that do not match the device it is running on -- so the install steps below are
-the same on every device.
+`pvr.eon` is a binary add-on, so it is published once per platform, each in its
+own folder: **Android armv7** in [`pvr.eon+android-armv7`](pvr.eon+android-armv7)
+and **macOS arm64** in [`pvr.eon+osx-arm64`](pvr.eon+osx-arm64). There is no
+plain `pvr.eon/` folder -- publishing one platform under the bare id would make
+it silently privileged (it alone would resolve through Kodi's default
+`<id>/<id>-<version>.zip` URL) and the catalog would not show which one it was.
+Kodi picks the right one by itself -- each build declares which platform it is
+for and Kodi ignores catalog entries that do not match the device it is running
+on -- so the install steps below are the same on every device.
 
 Check the current live version at any time:
 - Full catalog: https://davordragic.github.io/repository.eon/addons.xml
@@ -96,7 +99,7 @@ add-on on its own would silently drop the others:
 
 ```
 python3 publish.py                                   # re-emit catalog as-is
-python3 publish.py --pvr-zip ~/pvr.eon-21.8.5.zip    # ingest a new pvr.eon build
+python3 publish.py --variant-zip ~/pvr.eon+osx-arm64-21.8.5.zip   # ingest a build
 ```
 
 The skin's source lives in its own folder **next to this repository**, at
@@ -134,23 +137,29 @@ and it is archived in `source/` and re-published from then on:
 
 ```
 python3 publish.py --variant-zip ~/pvr.eon+osx-arm64-21.8.5.zip
+python3 publish.py --variant-zip ~/pvr.eon+android-armv7-21.8.5.zip
 ```
 
-The primary platform (Android armv7) keeps the plain `pvr.eon/` layout. Every
-other platform gets a `pvr.eon+<platform>/` folder holding
-`pvr.eon-<version>.zip` and a copy of the metadata files, plus a second
-`<addon>` entry in `addons.xml` carrying the **same id and version** as the
-primary one. That duplication is deliberate, and is how Kodi serves its own
-binary add-ons: `<platform>` makes Kodi discard the entries that do not match
-the device while it is parsing `addons.xml`, so the wrong build never reaches
-its database, and `<path>` overrides the default `<id>/<id>-<version>.zip` URL
-so the entry that does survive still resolves to its own zip. The official
+Every platform gets its own `pvr.eon+<platform>/` folder holding
+`pvr.eon-<version>.zip` and a copy of the metadata files, plus its own `<addon>`
+entry in `addons.xml` carrying the **same id and version** as the others. That
+duplication is deliberate, and is how Kodi serves its own binary add-ons:
+`<platform>` makes Kodi discard the entries that do not match the device while
+it is parsing `addons.xml`, so the wrong build never reaches its database, and
+`<path>` overrides the default `<id>/<id>-<version>.zip` URL so the entry that
+does survive still resolves to its own zip. The official
 `mirrors.kodi.tv/addons/omega` catalog lists `inputstream.adaptive` six times
 per version on exactly this basis.
 
-The metadata files are copied into each platform folder rather than shared with
-`pvr.eon/`, because Kodi resolves an add-on's artwork relative to the folder
-its `<path>` points into.
+Because no platform is canonical, `pvr.eon` has no source to hand
+`create_repository.py` at all -- that is what `variants_only` on its `ADDONS`
+entry means, and why every one of its catalog entries carries a `<path>`.
+`--pvr-zip` still works as a deprecated alias for `--variant-zip`, from when the
+Android build was the canonical one.
+
+The metadata files are copied into each platform folder rather than shared,
+because Kodi resolves an add-on's artwork relative to the folder its `<path>`
+points into.
 
 Platform and version are read from each build's own `addon.xml`, never parsed
 out of its filename -- platform strings contain hyphens themselves, so

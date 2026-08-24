@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.eon"
-  version="21.8.4"
+  version="21.8.5"
   name="EON PVR Client"
   provider-name="Nirvana">
   <requires>
+    
 <import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2"/>
 <import addon="kodi.binary.global.general" minversion="1.0.4" version="1.0.5"/>
 <import addon="kodi.binary.global.gui" minversion="5.15.0" version="5.15.0"/>
@@ -24,14 +25,17 @@
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>
     </assets>
+    <summary lang="de_DE">EON PVR Client</summary>
     <summary lang="en_GB">EON PVR Client</summary>
-    <summary lang="sl_SI">EON PVR odjemalec</summary>
-    <summary lang="hr_HR">EON PVR klijent</summary>
+    <summary lang="en_US">EON PVR Client</summary>
+    <summary lang="bg_BG">EON PVR Клиент</summary>
+    <description lang="de_DE">PVR-Client für Eon. Unterstützt TV, TV-Guide (EPG) und 7-Tage Replay</description>
     <description lang="en_GB">PVR-Client for Eon. Supports TV, TV-Guide (EPG) and 7 day replay</description>
-    <description lang="sl_SI">PVR odjemalec za EON. Podpira televizijo v živo, TV-vodnik (EPG) in 7-dnevni ogled nazaj.</description>
-    <description lang="hr_HR">PVR klijent za EON. Podržava gledanje TV-a uživo, TV vodič (EPG) i 7-dnevni ponovni pregled.</description>
+    <description lang="en_US">PVR-Client for Eon. Supports TV, TV-Guide (EPG) and 7 day replay</description>
+    <description lang="bg_BG">PVR клиент за EON, който ви позволява да гледате на живо телевизионни канали, да слушате радиостанции и да превъртате до 7 дни назад</description>
+    <disclaimer lang="de_DE">Keine offizielle Version. Alle Warenzeichen verbleiben bei Eon. Benutzung auf eigene Gefahr.</disclaimer>
     <disclaimer lang="en_GB">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
-    <disclaimer lang="sl_SI">Ni uradna različica. Vse blagovne znamke pripadajo EON. Uporaba na lastno odgovornost.</disclaimer>
-    <disclaimer lang="hr_HR">Nije službena verzija. Svi zaštitni znakovi pripadaju EON-u. Koristite na vlastitu odgovornost.</disclaimer>
+    <disclaimer lang="en_US">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
+    <disclaimer lang="bg_BG">Неофициална версия. Всички запазени марки принадлежат на EON. Използвайте на собствен риск.</disclaimer>
   </extension>
 </addon>
