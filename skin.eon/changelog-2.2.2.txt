@@ -1,3 +1,11 @@
+[B]2.2.2[/B]
+• Pressing back out of full screen TV now lands on the channel list, on the channel you were watching, instead of on the side rail. Home forced focus to the rail every time the window was entered, which also stopped Kodi from remembering where you had been; the rail is still the fallback for the case it was there for - a channel list that is still empty cannot take focus - but as soon as the list has channels in it, focus goes to the list. Coming back from the guide or from settings behaves the same way
+
+[B]2.2.1[/B]
+• Fixed the current value being unreadable in every list Kodi asks you to pick from - the guide's "Default select action" is one. Defaults.xml gives every label selectedcolor "selected", and in this skin "selected" is the accent, the same colour a focused row is filled with, so the selected row drew accent text on an accent background. Every list label that sits on that fill now restates its selected colour, and the validator fails on one that does not
+• Fixed the same rows going near-black on near-black once the list lost focus. The row body was always drawn in the inverted colour meant for the accent fill, even behind the dim fill used when the list is not focused; its colours now follow the list's focus state. Ten dialogs share that row, so they were all affected
+• The bottom bar now names the installed EON PVR client and this skin, with their versions. Both are read from the add-ons at runtime rather than written into the skin, so they cannot drift from what is actually installed, and the client half is left out on a Kodi that does not have it
+
 [B]2.2.0[/B]
 • No visible changes: this release is the skin rebuilt on shared building blocks, so the parts that have to look and behave alike no longer exist as separate copies that can drift apart. The on-screen keyboard, the infobar and the player controls are the ones that had copies
 • The infobar and the player controls now draw their seek marker, timeline labels, behind-live readout, seek amount, panel and REC/state icons from one definition each, instead of two that had to be edited in step
