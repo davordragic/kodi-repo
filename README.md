@@ -2,7 +2,7 @@
 
 A personal Kodi add-on repository, served via GitHub Pages at:
 
-**https://davordragic.github.io/kodi-repo**
+**https://davordragic.github.io/repository.eon**
 
 ## What's in here
 
@@ -12,8 +12,8 @@ A personal Kodi add-on repository, served via GitHub Pages at:
 | [`skin.eon`](skin.eon) | EON skin -- a minimal, PVR-first interface built to pair with it |
 
 Check the current live version at any time:
-- Full catalog: https://davordragic.github.io/kodi-repo/addons.xml
-- Checksum only: https://davordragic.github.io/kodi-repo/addons.xml.md5
+- Full catalog: https://davordragic.github.io/repository.eon/addons.xml
+- Checksum only: https://davordragic.github.io/repository.eon/addons.xml.md5
 
 ## Installing on Kodi (once, per device)
 
@@ -26,12 +26,12 @@ Android TV), not on this machine.
 
 2. **Add this repo as a file source**
    Settings → Media → File manager → **Add source** → enter:
-   `https://davordragic.github.io/kodi-repo/`
+   `https://davordragic.github.io/repository.eon/`
    Give it any name, e.g. `eon-repo`.
 
 3. **Install the repository add-on from the zip**
    Add-ons → the box icon (bottom left) → **Install from zip file** → select
-   the `eon-repo` source → `repository.eon-1.0.2.zip`.
+   the `eon-repo` source → `repository.eon-1.0.3.zip`.
    Wait for the "Add-on installed" notification.
 
 4. **Install add-ons from the repository**

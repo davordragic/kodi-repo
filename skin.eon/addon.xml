@@ -19,7 +19,7 @@
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <license>GPL-2.0-or-later</license>
-    <source>https://github.com/davordragic/kodi-repo</source>
+    <source>https://github.com/davordragic/repository.eon</source>
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.png</fanart>
