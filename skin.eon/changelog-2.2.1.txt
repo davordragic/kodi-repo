@@ -1,3 +1,15 @@
+[B]2.2.1[/B]
+• Fixed the current value being unreadable in every list Kodi asks you to pick from - the guide's "Default select action" is one. Defaults.xml gives every label selectedcolor "selected", and in this skin "selected" is the accent, the same colour a focused row is filled with, so the selected row drew accent text on an accent background. Every list label that sits on that fill now restates its selected colour, and the validator fails on one that does not
+• Fixed the same rows going near-black on near-black once the list lost focus. The row body was always drawn in the inverted colour meant for the accent fill, even behind the dim fill used when the list is not focused; its colours now follow the list's focus state. Ten dialogs share that row, so they were all affected
+• The bottom bar now names the installed EON PVR client and this skin, with their versions. Both are read from the add-ons at runtime rather than written into the skin, so they cannot drift from what is actually installed, and the client half is left out on a Kodi that does not have it
+
+[B]2.2.0[/B]
+• No visible changes: this release is the skin rebuilt on shared building blocks, so the parts that have to look and behave alike no longer exist as separate copies that can drift apart. The on-screen keyboard, the infobar and the player controls are the ones that had copies
+• The infobar and the player controls now draw their seek marker, timeline labels, behind-live readout, seek amount, panel and REC/state icons from one definition each, instead of two that had to be edited in step
+• The on-screen keyboard's 59 keys come from two definitions rather than 59 hand-written blocks
+• Removed code nothing used any more: a leftover variable, a leftover parameter, and comments describing behaviour that had already been replaced
+• Texture generation runs 6x faster, and the validator and the publish script no longer trip over deprecations in newer Python
+
 [B]2.1.10[/B]
 • Fixed buttons missing from several dialogs. A DialogButton hides itself when it has no label, because Kodi hides-but-does-not-label the buttons a dialog is not using - so any button I forgot to label vanished. The add-source dialog was missing Browse, Add and Remove, and the on-screen keyboard was missing OK, Cancel and IP address, which left no way to accept what you typed. Labels checked against Kodi's own skin, control by control, across every dialog in the skin
 • The validator now fails on a DialogButton with no label param, so a button cannot silently disappear again

@@ -28,6 +28,7 @@ import zipfile
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent
 SOURCE_DIR = REPO_ROOT / "source"
+SKIN_SOURCE = REPO_ROOT.parent / "skin.eon"
 
 # The metadata files create_repository.py copies next to each zip, in the
 # order the generated index pages list them. addon.xml is always there;
@@ -57,7 +58,15 @@ def locate_repository_eon(args):
 
 
 def locate_skin_eon(args):
-    return REPO_ROOT / "src" / "skin.eon"
+    """The skin's source tree, which sits next to this repository rather than
+    inside it -- the same arrangement pvr.eon's source has. Note the name
+    collision is only apparent: REPO_ROOT/"skin.eon" is the *published* folder,
+    this is the source."""
+    location = SKIN_SOURCE
+    if not location.is_dir():
+        sys.exit(f"Skin source not found at {location} -- publish.py expects it "
+                 f"as a sibling of this repository")
+    return location
 
 
 def _pvr_source_version(path):
@@ -90,11 +99,14 @@ ADDONS = [
     Addon(id="repository.eon", keep=2, locate=locate_repository_eon,
           ignore=("*.zip", "*.zip.md5")),
     Addon(id="pvr.eon", keep=5, locate=locate_pvr_eon),
-    # The skin is built from source in src/skin.eon (a candidate for its own
-    # repository later); skin.eon/ holds only what gets published. tools/ is
+    # The skin is built from its own source tree beside this repository (see
+    # locate_skin_eon); skin.eon/ here holds only what gets published. tools/ is
     # developer scripts, not part of the add-on.
+    # .git matters now that the skin source is its own repository: without it
+    # the whole history would be zipped into the add-on and shipped.
     Addon(id="skin.eon", keep=2, locate=locate_skin_eon,
-          ignore=("tools", "__pycache__", "*.zip", "*.zip.md5")),
+          ignore=(".git", ".gitignore", ".DS_Store", "tools", "__pycache__",
+                  "*.zip", "*.zip.md5")),
 ]
 
 

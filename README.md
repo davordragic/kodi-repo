@@ -92,18 +92,21 @@ python3 publish.py                                   # re-emit catalog as-is
 python3 publish.py --pvr-zip ~/pvr.eon-21.8.5.zip    # ingest a new pvr.eon build
 ```
 
-The skin's source lives in [`src/skin.eon`](src/skin.eon) -- it is the only
-add-on here built from source in-tree, so `skin.eon/` itself holds nothing but
-published files, the same as `pvr.eon/`. (`src/skin.eon` is laid out as a skin
-repository in its own right, so it can be split out later.)
+The skin's source lives in its own folder **next to this repository**, at
+`../skin.eon`, laid out as a skin repository in its own right so it can be
+split out entirely later -- the same arrangement `pvr.eon`'s source has. So
+nothing in this repository is a working copy of the skin: `skin.eon/` here
+holds only published files, the same as `pvr.eon/`. `publish.py` reads the
+source from that sibling folder and stops with a clear message if it is
+missing.
 
-To release a skin change, bump `version` in `src/skin.eon/addon.xml`, add an
-entry at the top of `src/skin.eon/changelog.txt`, then run `publish.py`. It
+To release a skin change, bump `version` in `../skin.eon/addon.xml`, add an
+entry at the top of `../skin.eon/changelog.txt`, then run `publish.py`. It
 zips the source (skipping `tools/`), writes
 `skin.eon/skin.eon-<version>.zip` + `.md5`, copies the changelog and rewrites
 `addons.xml` / `addons.xml.md5` and the `index.html` listings.
 
-Before publishing a skin change, run its two dev scripts from `src/skin.eon/`:
+Before publishing a skin change, run its two dev scripts from `../skin.eon/`:
 
 ```
 python3 tools/validate.py [path/to/kodi/en_gb/strings.po]   # static checks
@@ -113,7 +116,7 @@ python3 tools/make_textures.py                             # regenerate media/
 `validate.py` is the substitute for a Kodi run: it resolves every include,
 texture, font, colour, variable, constant and `$LOCALIZE` id, because Kodi
 fails soft on all of those (a typo just leaves part of the screen blank).
-`make_textures.py` regenerates every PNG in `src/skin.eon/media/`, plus
+`make_textures.py` regenerates every PNG in `../skin.eon/media/`, plus
 `icon.png` and `fanart.png`, from the vector definitions in that script -- the
 artwork is never hand-edited.
 
