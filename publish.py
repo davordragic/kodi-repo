@@ -30,7 +30,7 @@ import zipfile
 REPO_ROOT = pathlib.Path(__file__).resolve().parent
 SOURCE_DIR = REPO_ROOT / "source"
 SKIN_SOURCE = REPO_ROOT.parent / "skin.eon"
-KEYMAP_SOURCE = REPO_ROOT.parent / "script.eon.keymap"
+KEYMAP_SOURCE = REPO_ROOT.parent / "kodi-keymap-eon"
 
 # The metadata files create_repository.py copies next to each zip, in the
 # order the generated index pages list them. addon.xml is always there;
@@ -75,8 +75,9 @@ def locate_repository_eon(args):
 
 def locate_script_eon_keymap(args):
     """Source tree beside this repository, the same arrangement the skin and
-    the client have. As with the skin the name collision is only apparent:
-    REPO_ROOT/"script.eon.keymap" is the published folder, this is the source."""
+    the client have. The folder is named for its git repository rather than
+    for the add-on, so unlike skin.eon there is no name to confuse with the
+    published REPO_ROOT/"script.eon.keymap" folder."""
     location = KEYMAP_SOURCE
     if not location.is_dir():
         sys.exit(f"Keymap add-on source not found at {location} -- publish.py "
