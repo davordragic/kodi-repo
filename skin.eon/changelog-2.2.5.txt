@@ -1,3 +1,10 @@
+[B]2.2.5[/B]
+• "Other / Unknown" is gone from the rest of the skin too, not just the player infobar: the programme line in the channel list, the guide, the programme information dialog and PVR search all drop it the same way, and keep whatever else that line was carrying - the separator in front of it goes with it rather than being left dangling
+• The guide no longer ends the selected show's details with a "Next" line that had nothing to do with it. That line is the channel's next programme counted from right now, which is the right answer beside a channel but not beside a show: picking one that ended at 20:00 still read "Next 20:45". The description now uses that space instead, so more of it fits before it runs out of room. Beside a channel, in the home panel and the channel list, the line stays exactly as it was
+
+[B]2.2.4[/B]
+• "Other / Unknown" no longer sits under the title of a programme. Kodi has no state for "the provider sent no genre" - a tag without genre ids is still reported back as that placeholder - and this backend sends none, so it appeared on every programme while saying nothing. The line now falls through to the year, or disappears if there is nothing else to put there, and a real genre still shows the moment one arrives
+
 [B]2.2.3[/B]
 • The panel that says "Importing guide from clients" no longer draws over the clock. It sits on top of the header and its fill was see-through, so the time and date read straight through it, right beside the percentage. It now uses the same opaque panel and accent stripe that notifications do, so it covers that corner cleanly while it is up
 • Its progress bar is a straight line again. Nothing set the bar's textures, so it fell back to the rounded default - a 24x24 texture drawn with a 6 pixel border, which at 6 pixels tall leaves the rounded ends nowhere to go and crushes them into a lumpy shape. The channel list already drew its progress bars as plain straight lines; the guide import panel and the programme details bar now match it

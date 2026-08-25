@@ -22,7 +22,7 @@
       <description lang="hr_HR">Repozitorij za dodatak EON PVR klijent i presvlaku EON.</description>
     </extension>
   </addon>
-  <addon id="skin.eon" version="2.2.4" name="EON PVR Skin" provider-name="Davor Dragic">
+  <addon id="skin.eon" version="2.2.5" name="EON PVR Skin" provider-name="Davor Dragic">
     <requires>
       <import addon="xbmc.gui" version="5.17.0" />
     </requires>
