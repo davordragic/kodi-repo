@@ -1,3 +1,23 @@
+v21.8.8
+  - A programme played from the guide now shows its own length. It was being
+    presented with the timeline live TV gets -- from the programme's start
+    until now -- so a 30-minute episode that aired six hours ago read as
+    00:06:16 / 06:19:24 with the progress bar barely off its left edge. A
+    programme that is still on air keeps growing as before, and playback still
+    carries on past a finished programme into whatever airs next
+
+v21.8.7
+  - Fix live rewind being unavailable on the first channel played after opening
+    Kodi. The first request made once the stored access token has expired comes
+    back 401, and the retry that follows the token refresh was rebuilt with only
+    an Authorization header -- it dropped the User-Agent, the content type, and
+    the header that tells the EPG endpoint its time arguments are epoch
+    milliseconds. When that retried request was the tune-in's "what is on now"
+    lookup, the backend rejected it, the channel had no programme window, and it
+    played as a plain live stream with nothing to rewind into. Switching channel
+    appeared to fix it only because by then the token was valid and no retry was
+    needed
+
 v21.8.6
   - Channel start is no longer held up for several seconds. Two of the requests
     every tune-in made existed only to write diagnostic lines into the log, and

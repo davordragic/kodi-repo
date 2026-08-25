@@ -1,3 +1,10 @@
+[B]2.2.4[/B]
+• "Other / Unknown" no longer sits under the title of a programme. Kodi has no state for "the provider sent no genre" - a tag without genre ids is still reported back as that placeholder - and this backend sends none, so it appeared on every programme while saying nothing. The line now falls through to the year, or disappears if there is nothing else to put there, and a real genre still shows the moment one arrives
+
+[B]2.2.3[/B]
+• The panel that says "Importing guide from clients" no longer draws over the clock. It sits on top of the header and its fill was see-through, so the time and date read straight through it, right beside the percentage. It now uses the same opaque panel and accent stripe that notifications do, so it covers that corner cleanly while it is up
+• Its progress bar is a straight line again. Nothing set the bar's textures, so it fell back to the rounded default - a 24x24 texture drawn with a 6 pixel border, which at 6 pixels tall leaves the rounded ends nowhere to go and crushes them into a lumpy shape. The channel list already drew its progress bars as plain straight lines; the guide import panel and the programme details bar now match it
+
 [B]2.2.2[/B]
 • Pressing back out of full screen TV now lands on the channel list, on the channel you were watching, instead of on the side rail. Home forced focus to the rail every time the window was entered, which also stopped Kodi from remembering where you had been; the rail is still the fallback for the case it was there for - a channel list that is still empty cannot take focus - but as soon as the list has channels in it, focus goes to the list. Coming back from the guide or from settings behaves the same way
 
