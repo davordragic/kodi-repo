@@ -22,6 +22,25 @@
       <description lang="hr_HR">Repozitorij za dodatak EON PVR klijent i presvlaku EON.</description>
     </extension>
   </addon>
+  <addon id="script.eon.keymap" name="EON Remote Keys" version="1.0.0" provider-name="Davor Dragic">
+    <requires>
+      <import addon="xbmc.python" version="3.0.0" />
+    </requires>
+    <extension point="xbmc.service" library="service.py" />
+    <extension point="xbmc.addon.metadata">
+      <platform>all</platform>
+      <license>GPL-2.0-or-later</license>
+      <summary lang="en_GB">Stops Up and Down jumping ten minutes through a recording</summary>
+      <description lang="en_GB">Kodi maps Up and Down during video playback to a ten minute skip, which on a TV remote are the two easiest buttons to press by accident. This add-on gives them something a remote can use instead: Up opens the player OSD, Down closes it, and neither one seeks.
+
+Live TV is left alone, where Up and Down remain channel up and channel down.
+
+The add-on installs a keymap file into your profile and reloads it, so it takes effect without restarting Kodi. Turning its setting off removes the file again.</description>
+      <assets>
+        <icon>icon.png</icon>
+      </assets>
+    </extension>
+  </addon>
   <addon id="skin.eon" version="2.2.5" name="EON PVR Skin" provider-name="Davor Dragic">
     <requires>
       <import addon="xbmc.gui" version="5.17.0" />

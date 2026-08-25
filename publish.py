@@ -30,6 +30,7 @@ import zipfile
 REPO_ROOT = pathlib.Path(__file__).resolve().parent
 SOURCE_DIR = REPO_ROOT / "source"
 SKIN_SOURCE = REPO_ROOT.parent / "skin.eon"
+KEYMAP_SOURCE = REPO_ROOT.parent / "script.eon.keymap"
 
 # The metadata files create_repository.py copies next to each zip, in the
 # order the generated index pages list them. addon.xml is always there;
@@ -72,6 +73,17 @@ def locate_repository_eon(args):
     return REPO_ROOT / "repository.eon"
 
 
+def locate_script_eon_keymap(args):
+    """Source tree beside this repository, the same arrangement the skin and
+    the client have. As with the skin the name collision is only apparent:
+    REPO_ROOT/"script.eon.keymap" is the published folder, this is the source."""
+    location = KEYMAP_SOURCE
+    if not location.is_dir():
+        sys.exit(f"Keymap add-on source not found at {location} -- publish.py "
+                 f"expects it as a sibling of this repository")
+    return location
+
+
 def locate_skin_eon(args):
     """The skin's source tree, which sits next to this repository rather than
     inside it -- the same arrangement pvr.eon's source has. Note the name
@@ -107,6 +119,13 @@ ADDONS = [
     # developer scripts, not part of the add-on.
     # .git matters now that the skin source is its own repository: without it
     # the whole history would be zipped into the add-on and shipped.
+    # A keymap cannot travel inside a skin or a binary add-on: Kodi reads them
+    # from system/keymaps and the two profile directories and nowhere else (see
+    # ButtonTranslator.cpp). This add-on exists to carry one into the profile,
+    # which is the only route a repository has to a device's key bindings.
+    Addon(id="script.eon.keymap", keep=2, locate=locate_script_eon_keymap,
+          ignore=(".git", ".gitignore", ".DS_Store", "__pycache__", "*.pyc",
+                  "*.zip", "*.zip.md5", "index.html")),
     Addon(id="skin.eon", keep=2, locate=locate_skin_eon,
           ignore=(".git", ".gitignore", ".DS_Store", "tools", "__pycache__",
                   "*.zip", "*.zip.md5")),
