@@ -1,3 +1,32 @@
+v21.8.7
+  - Fix live rewind being unavailable on the first channel played after opening
+    Kodi. The first request made once the stored access token has expired comes
+    back 401, and the retry that follows the token refresh was rebuilt with only
+    an Authorization header -- it dropped the User-Agent, the content type, and
+    the header that tells the EPG endpoint its time arguments are epoch
+    milliseconds. When that retried request was the tune-in's "what is on now"
+    lookup, the backend rejected it, the channel had no programme window, and it
+    played as a plain live stream with nothing to rewind into. Switching channel
+    appeared to fix it only because by then the token was valid and no retry was
+    needed
+
+v21.8.6
+  - Channel start is no longer held up for several seconds. Two of the requests
+    every tune-in made existed only to write diagnostic lines into the log, and
+    they fetched the playlist on the very session URL that was then handed to
+    the player -- so the player joined a session whose opening playlist window
+    had already been served, and had to wait for the next segment to be
+    published before it could show anything. Those fetches now sit behind a
+    setting (Streaming -> "Log stream diagnostics", off by default). Measured
+    on macOS, a channel starts in about 0.6 seconds where it used to take
+    about 6.4
+  - Two further requests are gone from the tune-in path: the current time is
+    now derived from the backend/device clock offset, re-measured every 15
+    minutes rather than fetched for every URL, and the "what is on now" lookup
+    is remembered per channel for as long as that programme is still on air.
+    Seeking gains from the first of those too -- the seek proxy used to fetch
+    the time before it could mint each URL
+
 v21.8.5
   - Fix being unable to return to live TV from the guide: while a replay show
     was playing, selecting the channel's currently airing programme did
