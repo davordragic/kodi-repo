@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="script.eon.keymap"
     name="EON Remote Keys"
-    version="1.0.1"
+    version="1.1.0"
     provider-name="Davor Dragic">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -10,12 +10,14 @@
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <license>GPL-2.0-or-later</license>
-    <summary lang="en_GB">Up opens the OSD and Down closes it, instead of skipping ten minutes</summary>
-    <description lang="en_GB">Kodi maps Up and Down during video playback to a ten minute skip, and on a TV remote those are the two easiest buttons to press by accident. You meet it when you play a programme from the guide: Up and Down jump ten minutes through it.
+    <summary lang="en_GB">Up brings up the player OSD instead of skipping ten minutes</summary>
+    <description lang="en_GB">Kodi gives Up and Down two different jobs depending on what is playing. On a programme opened from the guide they skip ten minutes, which on a TV remote are the two easiest buttons to press by accident. On live TV they are channel up and channel down.
 
-This add-on gives them something a remote can use instead. Up opens the player OSD, Down closes it again, and neither one seeks.
+This add-on gives them one meaning everywhere: Up brings up the player OSD, and neither key seeks.
 
-Live TV never had the problem and does not change: Kodi gives it a keymap of its own, where Up and Down are channel up and channel down, and this add-on leaves that alone. There is one exception worth knowing. While the OSD is open, Down closes it whatever you are watching, live included, because the OSD is the same window in both cases. In this skin that costs one shortcut inside the OSD, from the timeline down to the row of buttons; that row is still reachable with Up and then Left.
+The OSD itself is left exactly as it is. Once it is open, Up, Down, Left and Right move around inside it and Back puts it away, all as usual.
+
+What this costs is channel zapping from Up and Down on live TV. One pair of keys cannot both zap and open the OSD. The channels are still there: the OSD has a channel button, and the channel list is unchanged.
 
 The keymap is written into your profile and reloaded in place, so it applies without restarting Kodi. Turning the setting off removes it again.</description>
     <assets>
