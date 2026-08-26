@@ -18,6 +18,8 @@ import argparse
 import contextlib
 import hashlib
 import dataclasses
+import io
+import os
 import pathlib
 import re
 import shutil
@@ -106,7 +108,13 @@ ADDONS = [
     # create_repository.py has already built the zip: shipping it would embed
     # a listing that is permanently one publish out of date, and would change
     # the zip's checksum on every run for content that never differs.
-    Addon(id="repository.eon", keep=2, locate=locate_repository_eon,
+    # keep=1, unlike everything else here: this folder is what a new device
+    # browses to bootstrap itself, so a second version sitting in the listing
+    # is a wrong zip one row away from the right one. Rolling the repository
+    # add-on back is not worth that -- a device on a broken repository version
+    # cannot self-update out of it anyway, so the recovery is the same manual
+    # install-from-zip either way, and the fix ships as a version bump.
+    Addon(id="repository.eon", keep=1, locate=locate_repository_eon,
           ignore=("*.zip", "*.zip.md5", "index.html")),
     # pvr.eon is a binary add-on: one build per platform and no platform-
     # neutral build to treat as canonical, so every platform gets its own
@@ -206,6 +214,70 @@ def variant_builds(addon):
         if current is None or version_key(variant.version) > version_key(current.version):
             newest[platform] = variant
     return [newest[p] for p in sorted(newest)]
+
+
+# A zip entry carries the mtime of the file it was read from, so a source
+# file that is touched but not changed -- an editor writing it back byte for
+# byte, or the addon.xml create_repository.py copies into repository.eon/ with
+# shutil.copyfile, which does not preserve mtimes -- yields a byte-different
+# zip holding identical content. These zips are tracked in git, so each one of
+# those lands in the history as a binary change that means nothing, and the
+# .md5 beside it changes with it. Rewriting every entry with fixed metadata
+# makes a zip's bytes a pure function of its contents: an add-on nobody
+# touched produces the file that is already committed, and git sees nothing.
+# 1980-01-01 is the zip format's own epoch and the conventional stand-in
+# timestamp for a reproducible archive.
+ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
+
+
+def zip_state(path):
+    """(digest, mtime) of an already-published zip, or None if it is new."""
+    if not path.is_file():
+        return None
+    return hashlib.md5(path.read_bytes()).hexdigest(), path.stat().st_mtime
+
+
+def published_zip_states():
+    """Every folder-built zip as it stands before this run, so normalise_zip()
+    can tell a rebuild that changed something from one that did not. Taken
+    before create_repository.py runs, because that overwrites them."""
+    return {path: zip_state(path)
+            for addon in ADDONS if not addon.variants_only
+            for path in (REPO_ROOT / addon.id).glob(f"{addon.id}-*.zip")}
+
+
+def normalise_zip(path, previous=None):
+    """Rewrite `path` with per-entry timestamps, permissions and ordering
+    fixed, so identical contents always give an identical file. Returns
+    whether the result differs from what was published before."""
+    with zipfile.ZipFile(path) as zf:
+        entries = [(info, zf.read(info))
+                   for info in sorted(zf.infolist(), key=lambda i: i.filename)]
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as out:
+        for info, data in entries:
+            clean = zipfile.ZipInfo(info.filename, ZIP_EPOCH)
+            clean.compress_type = info.compress_type
+            # Unix, so the mode below is what a reader gets back. os.walk order
+            # and the umask of whoever ran the publish stay out of the bytes.
+            clean.create_system = 3
+            if info.is_dir():
+                clean.external_attr = (0o40755 << 16) | 0x10
+            else:
+                clean.external_attr = 0o100644 << 16
+            out.writestr(clean, data)
+    data = buffer.getvalue()
+    path.write_bytes(data)
+    write_zip_md5(path)
+    if previous and previous[0] == hashlib.md5(data).hexdigest():
+        # Byte for byte what was already published. create_repository.py has
+        # overwritten the file by now, so the bytes had to be put back, but
+        # the mtimes can go back too -- a publish that changed nothing then
+        # leaves nothing behind at all, not even a touched timestamp.
+        for target in (path, pathlib.Path(f"{path}.md5")):
+            os.utime(target, (previous[1], previous[1]))
+        return False
+    return True
 
 
 def write_zip_md5(path):
@@ -380,17 +452,22 @@ def rewrite_index(addon_id, kept_versions, folder=None):
 
 
 def rewrite_root_index(repo_eon_version):
+    """The root listing is what someone bootstrapping a device browses in
+    Kodi's "Install from zip file", so repository.eon/ has to be linked here
+    like every other add-on: HTTP browsing is pure link-following, and a
+    folder GitHub Pages serves perfectly well is invisible to Kodi if nothing
+    points at it. The root used to carry a second copy of the repository zip
+    instead of that link; the link is the same click and one file fewer to
+    keep in step."""
     lines = [
         "<!DOCTYPE html>", "<html>",
         "<head><title>Index of /</title></head>",
         "<body>", "<h1>Index of /</h1>", "<pre>",
-        f'<a href="repository.eon-{repo_eon_version}.zip">'
-        f'repository.eon-{repo_eon_version}.zip</a>',
         '<a href="addons.xml">addons.xml</a>',
         '<a href="addons.xml.md5">addons.xml.md5</a>',
     ]
     for addon in ADDONS:
-        if addon.id != "repository.eon" and not addon.variants_only:
+        if not addon.variants_only:
             lines.append(f'<a href="{addon.id}/">{addon.id}/</a>')
         # Globbed off disk rather than taken from the variants we just
         # published, so a platform folder still gets listed once its source
@@ -401,16 +478,10 @@ def rewrite_root_index(repo_eon_version):
     lines += ["</pre>", "</body>", "</html>", ""]
     (REPO_ROOT / "index.html").write_text("\n".join(lines))
 
-    for old in REPO_ROOT.glob("repository.eon-*.zip"):
-        if old.name != f"repository.eon-{repo_eon_version}.zip":
-            old.unlink()
-    for old in REPO_ROOT.glob("repository.eon-*.zip.md5"):
-        if old.name != f"repository.eon-{repo_eon_version}.zip.md5":
-            old.unlink()
-    shutil.copyfile(REPO_ROOT / "repository.eon" / f"repository.eon-{repo_eon_version}.zip",
-                     REPO_ROOT / f"repository.eon-{repo_eon_version}.zip")
-    shutil.copyfile(REPO_ROOT / "repository.eon" / f"repository.eon-{repo_eon_version}.zip.md5",
-                     REPO_ROOT / f"repository.eon-{repo_eon_version}.zip.md5")
+    # Sweeps up the root copies this script used to make, so a tree published
+    # by an older version of it converges on the first run.
+    for old in REPO_ROOT.glob("repository.eon-*.zip*"):
+        old.unlink()
 
 
 def main():
@@ -428,6 +499,8 @@ def main():
 
     ingest_variant_zips(args.variant_zip + ([args.pvr_zip] if args.pvr_zip else []))
 
+    previous = published_zip_states()
+
     with contextlib.ExitStack() as stack:
         locations = [str(prepare_location(a, args, stack))
                      for a in ADDONS if not a.variants_only]
@@ -435,6 +508,21 @@ def main():
             [sys.executable, "create_repository.py", "--datadir=.", "--no-parallel",
              *locations],
             cwd=REPO_ROOT, check=True,
+        )
+
+    # Every zip create_repository.py just built, plus the older versions still
+    # kept beside them, so a folder converges the first time this runs. The
+    # pvr.eon platform folders are left alone: publish_variant() copies those
+    # zips out of source/ byte for byte, so they are already stable, and they
+    # are someone else's build artifact to leave intact.
+    rebuilt = {}
+    for addon in ADDONS:
+        if addon.variants_only:
+            continue
+        rebuilt[addon.id] = sorted(
+            archive.name
+            for archive in (REPO_ROOT / addon.id).glob(f"{addon.id}-*.zip")
+            if normalise_zip(archive, previous.get(archive))
         )
 
     # Must land after create_repository.py has rewritten addons.xml from
@@ -448,7 +536,8 @@ def main():
         if not addon.variants_only:
             kept = prune(addon)
             rewrite_index(addon.id, kept)
-            print(f"{addon.id}: kept {kept}")
+            changed = rebuilt.get(addon.id) or ["nothing changed"]
+            print(f"{addon.id}: kept {kept}, rebuilt {', '.join(changed)}")
         variants = [v for v, _ in published if v.addon_id == addon.id]
         prune_variant_source(addon, variants)
         for variant in variants:

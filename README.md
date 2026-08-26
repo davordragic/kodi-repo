@@ -44,7 +44,8 @@ Android TV), not on this machine.
 
 3. **Install the repository add-on from the zip**
    Add-ons → the box icon (bottom left) → **Install from zip file** → select
-   the `repository.eon` source → `repository.eon-1.0.3.zip`.
+   the `repository.eon` source → open the `repository.eon/` folder inside it
+   → `repository.eon-1.0.3.zip`.
    Wait for the "Add-on installed" notification.
 
 4. **Install add-ons from the repository**
