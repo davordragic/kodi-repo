@@ -10,6 +10,7 @@ A personal Kodi add-on repository, served via GitHub Pages at:
 |---|---|
 | `pvr.eon` | EON.tv PVR client (live TV, EPG, replay/catchup) |
 | [`skin.eon`](skin.eon) | EON skin -- a minimal, PVR-first interface built to pair with it |
+| [`script.eon.keymap`](script.eon.keymap) | EON Remote Keys -- Up brings up the player OSD instead of skipping ten minutes |
 
 `pvr.eon` is a binary add-on, so it is published once per platform, each in its
 own folder: **Android armv7** in [`pvr.eon+android-armv7`](pvr.eon+android-armv7)
@@ -37,11 +38,13 @@ Android TV), not on this machine.
 2. **Add this repo as a file source**
    Settings → Media → File manager → **Add source** → enter:
    `https://davordragic.github.io/repository.eon/`
-   Give it any name, e.g. `eon-repo`.
+   Name it **`repository.eon`** -- the name is what the source is listed
+   under in the next step, so give it the repository's own name rather than
+   something you have to remember.
 
 3. **Install the repository add-on from the zip**
    Add-ons → the box icon (bottom left) → **Install from zip file** → select
-   the `eon-repo` source → `repository.eon-1.0.3.zip`.
+   the `repository.eon` source → `repository.eon-1.0.3.zip`.
    Wait for the "Add-on installed" notification.
 
 4. **Install add-ons from the repository**
@@ -73,6 +76,27 @@ Android TV), not on this machine.
 
    To go back to the stock skin: Settings → Interface → Skin → Estuary.
 
+7. **Optional: install EON Remote Keys**
+   Add-ons → the box icon → **Install from repository** → **EON Add-on
+   Repository** → **Services** → **EON Remote Keys** → **Install**.
+
+   It fixes what Up and Down do while something is playing. Kodi binds them
+   to a ten minute skip on a programme opened from the guide -- on a TV remote,
+   the two easiest buttons to hit by accident -- and to channel up/down on
+   live TV. With this on, **Up brings up the player OSD whatever is playing
+   and neither key seeks**; the OSD itself is untouched, so once it is open
+   Up/Down/Left/Right move around inside it and Back closes it. The cost is
+   zapping with Up and Down on live TV -- use the OSD's channel button or the
+   channel list instead.
+
+   It is on by default; the toggle is Add-ons → My add-ons → Services →
+   **EON Remote Keys** → **Configure** → **"Up brings up the player OSD"**.
+   Switching it off removes the keymap again. Either way the change applies
+   immediately -- the add-on reloads the keymap in place, no Kodi restart.
+
+   It works with any skin, including Estuary: a keymap is a Kodi-level file,
+   not a skin feature.
+
 ## Getting updates / auto-update
 
 Kodi periodically checks `addons.xml` on its own and installs updates for
@@ -93,22 +117,31 @@ To check immediately instead of waiting for the periodic check:
 ## Publishing an update (maintainer notes)
 
 `publish.py` is the entry point and always re-emits the **whole** catalog
-(`repository.eon`, `pvr.eon`, `skin.eon`), because `create_repository.py`
-rewrites `addons.xml` from only the add-ons it is given -- publishing one
-add-on on its own would silently drop the others:
+(`repository.eon`, `pvr.eon`, `script.eon.keymap`, `skin.eon`), because
+`create_repository.py` rewrites `addons.xml` from only the add-ons it is
+given -- publishing one add-on on its own would silently drop the others:
 
 ```
 python3 publish.py                                   # re-emit catalog as-is
 python3 publish.py --variant-zip ~/pvr.eon+osx-arm64-21.8.5.zip   # ingest a build
 ```
 
-The skin's source lives in its own folder **next to this repository**, at
-`../skin.eon`, laid out as a skin repository in its own right so it can be
-split out entirely later -- the same arrangement `pvr.eon`'s source has. So
-nothing in this repository is a working copy of the skin: `skin.eon/` here
-holds only published files, the same as `pvr.eon/`. `publish.py` reads the
-source from that sibling folder and stops with a clear message if it is
-missing.
+Nothing in this repository is a working copy of an add-on: every folder here
+holds published files only. The sources live **next to this repository**, each
+its own git repository so it can be split out entirely later -- the same
+arrangement `pvr.eon`'s source has -- and each folder named to sit with the
+others rather than after its add-on id:
+
+| Source folder | Git repository | Published into |
+|---|---|---|
+| `../skin.eon` | `kodi-skin-eon` | `skin.eon/` |
+| `../keymap.eon` | `kodi-keymap-eon` | `script.eon.keymap/` |
+
+So the `skin.eon` name collision is only apparent: `../skin.eon` is the source,
+`skin.eon/` in here is what got published from it. `publish.py` reads both
+sources from those sibling folders and stops with a clear message if either is
+missing. `pvr.eon` has no entry because nothing here builds it -- its builds
+arrive as finished zips (see below).
 
 To release a skin change, bump `version` in `../skin.eon/addon.xml`, add an
 entry at the top of `../skin.eon/changelog.txt`, then run `publish.py`. It
@@ -129,6 +162,24 @@ fails soft on all of those (a typo just leaves part of the screen blank).
 `make_textures.py` regenerates every PNG in `../skin.eon/media/`, plus
 `icon.png` and `fanart.png`, from the vector definitions in that script -- the
 artwork is never hand-edited.
+
+### Releasing an EON Remote Keys change
+
+Bump `version` in `../keymap.eon/addon.xml` and run `publish.py`; it zips the
+source into `script.eon.keymap/script.eon.keymap-<version>.zip` + `.md5` and
+rewrites the catalog and index pages the same way it does for the skin. There
+is no `changelog.txt` in that source yet -- `create_repository.py` copies one
+out as `changelog-<version>.txt` the moment there is one to copy, so adding
+the file is all it takes.
+
+The add-on exists at all because a keymap cannot ride inside the skin or the
+PVR client: Kodi reads keymaps from `special://xbmc/system/keymaps/` and the
+two profile directories and nowhere else (`ButtonTranslator.cpp`). A service
+add-on that writes one into the profile is the only route a repository has to
+a device's key bindings, so that is what `service.py` does -- it syncs
+`resources/keymaps/eon-remote.xml` into `special://profile/keymaps/` to match
+its own setting, then fires `Action(reloadkeymaps)` so the change lands
+without a restart.
 
 ### Adding a build for another platform
 
@@ -192,13 +243,3 @@ file) show up empty. `.nojekyll` disables that, and the `index.html` files at
 the root and in each add-on folder provide real `<a href>` listings that
 Kodi's file manager can actually parse and browse. `publish.py` rewrites all
 of them, so they never need editing by hand.
-
-### Why the repository add-on is `repository.eon` (not `repository.davor`)
-
-The previous `repository.davor.org` add-on ID got stuck: on both a fresh
-Android TV and a fresh desktop install, Kodi would fetch `addons.xml`
-successfully but consistently end up with zero add-ons parsed into its local
-database for that repository ID — even after a full uninstall/reinstall.
-Renaming to a fresh add-on ID (`repository.eon`) means Kodi has no prior
-history at all for it, which sidesteps whatever cached/broken state that was
-attached to the old ID.
