@@ -1,0 +1,112 @@
+v21.8.8
+  - A programme played from the guide now shows its own length. It was being
+    presented with the timeline live TV gets -- from the programme's start
+    until now -- so a 30-minute episode that aired six hours ago read as
+    00:06:16 / 06:19:24 with the progress bar barely off its left edge. A
+    programme that is still on air keeps growing as before, and playback still
+    carries on past a finished programme into whatever airs next
+
+v21.8.7
+  - Fix live rewind being unavailable on the first channel played after opening
+    Kodi. The first request made once the stored access token has expired comes
+    back 401, and the retry that follows the token refresh was rebuilt with only
+    an Authorization header -- it dropped the User-Agent, the content type, and
+    the header that tells the EPG endpoint its time arguments are epoch
+    milliseconds. When that retried request was the tune-in's "what is on now"
+    lookup, the backend rejected it, the channel had no programme window, and it
+    played as a plain live stream with nothing to rewind into. Switching channel
+    appeared to fix it only because by then the token was valid and no retry was
+    needed
+
+v21.8.6
+  - Channel start is no longer held up for several seconds. Two of the requests
+    every tune-in made existed only to write diagnostic lines into the log, and
+    they fetched the playlist on the very session URL that was then handed to
+    the player -- so the player joined a session whose opening playlist window
+    had already been served, and had to wait for the next segment to be
+    published before it could show anything. Those fetches now sit behind a
+    setting (Streaming -> "Log stream diagnostics", off by default). Measured
+    on macOS, a channel starts in about 0.6 seconds where it used to take
+    about 6.4
+  - Two further requests are gone from the tune-in path: the current time is
+    now derived from the backend/device clock offset, re-measured every 15
+    minutes rather than fetched for every URL, and the "what is on now" lookup
+    is remembered per channel for as long as that programme is still on air.
+    Seeking gains from the first of those too -- the seek proxy used to fetch
+    the time before it could mint each URL
+
+v21.8.5
+  - Fix being unable to return to live TV from the guide: while a replay show
+    was playing, selecting the channel's currently airing programme did
+    nothing at all. Replay is opened as an EPG-tag playback session again
+    rather than claiming the channel session, which is what made Kodi treat
+    the channel as already playing live and skip the re-tune. Trade-off: the
+    displayed title stays pinned to the selected show if playback continues
+    past its scheduled end (progress and seeking stay correct)
+  - Fix "playback failed" when two stream opens overlap. The local seek proxy
+    was torn down and relistened on a fresh port for every new stream, which
+    left the open already in flight pointing at a dead port. It now keeps one
+    port for the add-on's lifetime and tracks each stream as its own session,
+    so concurrent opens no longer invalidate each other. Overlap is routine:
+    Kodi asks for an EPG tag's stream properties twice per playback, and its
+    "play next programme automatically" can fire at the same moment the user
+    picks something else in the guide
+  - Declare inputstream.ffmpegdirect as a dependency again so Kodi installs
+    it automatically; it is the inputstream the add-on's own documentation
+    tells users to select, but the import was dropped in 2023
+v21.8.4
+  - Fix replay/catchup not updating title/progress once playback continues
+    past the watched show's scheduled end
+v21.8.3
+  - Fix the same spurious "invalid_input" error dialog also appearing during
+    background EPG grid refresh
+v21.8.2
+  - Add "ffmpegdirect Quality" setting (Default/Highest bitrate/Lowest
+    bitrate) to pin stream quality instead of leaving it to ffmpeg's HLS
+    demuxer default (which just opens whichever variant is listed first in
+    the master playlist, with no bandwidth awareness)
+  - Fix a spurious "invalid_input" error dialog appearing on some channel
+    switches when a best-effort EPG lookup (used for the live rewind
+    window) transiently fails; playback already fell back gracefully, the
+    dialog was just an unnecessary false alarm
+v21.8.1
+  - Add rewind (seeking) within the currently airing programme for live TV,
+    not just replay/catchup content
+  - Fix crash when returning to live TV after rewinding
+v21.8.0
+  - Add progress bar and timeline for live TV and replay/catchup playback
+  - Add seeking (fast-forward/rewind) for replay/catchup content
+  - Fix playback failures caused by the streaming CDN blocking the addon's
+    User-Agent, affecting both live TV and replay/catchup (#16)
+v21.7.11
+  - Maintenance release
+v21.5.0
+- Initial release
+v21.6.0
+- Migrate from botan towards native AES and SHA256 implementations for:
+  - better portability
+  - faster compilation
+  - less dependencies
+v21.6.1
+  - Switch from adaptive to manual-osd for inputstream
+  - Fix not subscribed channels leading to crash
+v21.7.0
+  - Add Android TV platform (e.g. BigScreen/4K)
+v21.7.1
+  - Adapt user agent header for platforms when streaming
+v21.7.2
+  - Fix EPG date
+v21.7.3
+  - Optionally use inputstream.ffmpegdirect
+v21.7.4
+  - Exploit some more EPG data (live, age, seasons, episodes)
+v21.7.5
+  - Fix startup with empty credentials and web
+v21.7.6
+  - Try to fix armv7a
+v21.7.7
+  - Fix refresh token when updating
+v21.7.8
+  - New Setting filter for channel age rating
+v21.7.9
+  - Add bulgarian translation (Thx to CTEoloAH!)

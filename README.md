@@ -13,8 +13,9 @@ A personal Kodi add-on repository, served via GitHub Pages at:
 | [`script.eon.keymap`](script.eon.keymap) | EON Remote Keys -- Up brings up the player OSD instead of skipping ten minutes |
 
 `pvr.eon` is a binary add-on, so it is published once per platform, each in its
-own folder: **Android armv7** in [`pvr.eon+android-armv7`](pvr.eon+android-armv7)
-and **macOS arm64** in [`pvr.eon+osx-arm64`](pvr.eon+osx-arm64). There is no
+own folder: **Android armv7** in [`pvr.eon+android-armv7`](pvr.eon+android-armv7),
+**Android arm64** in [`pvr.eon+android-aarch64`](pvr.eon+android-aarch64) and
+**macOS arm64** in [`pvr.eon+osx-arm64`](pvr.eon+osx-arm64). There is no
 plain `pvr.eon/` folder -- publishing one platform under the bare id would make
 it silently privileged (it alone would resolve through Kodi's default
 `<id>/<id>-<version>.zip` URL) and the catalog would not show which one it was.
@@ -220,10 +221,12 @@ it declares does have to be one Kodi recognises (`osx-arm64`, `osx-x86_64`,
 `android-aarch64`, `windows-x86_64`, ...); an unrecognised string makes the
 add-on invisible on every device instead of just the wrong ones.
 
-Note the flip side of that filtering: the Android build declares
-`android-armv7`, which a 64-bit Kodi does **not** accept. If a device stops
-offering the PVR client after a Kodi reinstall, check whether it is now running
-the arm64 APK -- that needs an `android-aarch64` build published here.
+Note the flip side of that filtering: the armv7 Android build declares
+`android-armv7`, which a 64-bit Kodi does **not** accept, and vice versa. Both
+Android ABIs are published, so a device is covered either way -- but if one ever
+stops offering the PVR client after a Kodi reinstall, check which APK it now
+runs (Settings -> System information -> Summary) and make sure the matching
+build is still in the catalog.
 
 ### Forcing a full re-sync on already-installed devices
 
