@@ -77,7 +77,7 @@ The keymap is written into your profile and reloaded in place, so it applies wit
       <disclaimer lang="hr_HR">Neslužbena presvlaka. Nije povezana s EON.tv.</disclaimer>
     </extension>
   </addon>
-  <addon id="pvr.eon" version="21.8.8" name="EON PVR Client" provider-name="Nirvana">
+  <addon id="pvr.eon" version="21.8.9" name="EON PVR Client" provider-name="Nirvana">
     <requires>
       <import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2" />
       <import addon="kodi.binary.global.general" minversion="1.0.4" version="1.0.5" />
@@ -110,11 +110,11 @@ The keymap is written into your profile and reloaded in place, so it applies wit
       <disclaimer lang="en_GB">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
       <disclaimer lang="en_US">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
       <disclaimer lang="bg_BG">Неофициална версия. Всички запазени марки принадлежат на EON. Използвайте на собствен риск.</disclaimer>
-      <size>290925</size>
-      <path>pvr.eon+android-aarch64/pvr.eon-21.8.8.zip</path>
+      <size>314233</size>
+      <path>pvr.eon+android-aarch64/pvr.eon-21.8.9.zip</path>
     </extension>
   </addon>
-  <addon id="pvr.eon" version="21.8.8" name="EON PVR Client" provider-name="Nirvana">
+  <addon id="pvr.eon" version="21.8.9" name="EON PVR Client" provider-name="Nirvana">
     <requires>
       <import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2" />
       <import addon="kodi.binary.global.general" minversion="1.0.4" version="1.0.5" />
@@ -147,11 +147,11 @@ The keymap is written into your profile and reloaded in place, so it applies wit
       <disclaimer lang="en_GB">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
       <disclaimer lang="en_US">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
       <disclaimer lang="bg_BG">Неофициална версия. Всички запазени марки принадлежат на EON. Използвайте на собствен риск.</disclaimer>
-      <size>283170</size>
-      <path>pvr.eon+android-armv7/pvr.eon-21.8.8.zip</path>
+      <size>295900</size>
+      <path>pvr.eon+android-armv7/pvr.eon-21.8.9.zip</path>
     </extension>
   </addon>
-  <addon id="pvr.eon" version="21.8.8" name="EON PVR Client" provider-name="Nirvana">
+  <addon id="pvr.eon" version="21.8.9" name="EON PVR Client" provider-name="Nirvana">
     <requires>
       <import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2" />
       <import addon="kodi.binary.global.general" minversion="1.0.4" version="1.0.5" />
@@ -162,7 +162,7 @@ The keymap is written into your profile and reloaded in place, so it applies wit
       <import addon="inputstream.adaptive" minversion="21.0.0" />
       <import addon="script.module.inputstreamhelper" version="0.5.8" />
     </requires>
-    <extension point="kodi.pvrclient" library_osx="pvr.eon.21.8.8.dylib" />
+    <extension point="kodi.pvrclient" library_osx="pvr.eon.21.8.9.dylib" />
     <extension point="xbmc.addon.metadata">
       <platform>osx-arm64</platform>
       <license>GPL-2.0-or-later</license>
@@ -184,8 +184,8 @@ The keymap is written into your profile and reloaded in place, so it applies wit
       <disclaimer lang="en_GB">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
       <disclaimer lang="en_US">No official version. All trademarks belong to Eon. Use at own risk.</disclaimer>
       <disclaimer lang="bg_BG">Неофициална версия. Всички запазени марки принадлежат на EON. Използвайте на собствен риск.</disclaimer>
-      <size>237051</size>
-      <path>pvr.eon+osx-arm64/pvr.eon-21.8.8.zip</path>
+      <size>245737</size>
+      <path>pvr.eon+osx-arm64/pvr.eon-21.8.9.zip</path>
     </extension>
   </addon>
 </addons>

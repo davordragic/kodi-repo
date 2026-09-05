@@ -1,3 +1,23 @@
+v21.8.9
+  - The programme guide loads about four times faster. Kodi asks for the guide
+    one channel at a time and waits for each answer, so a full refresh was one
+    HTTP round trip per channel -- 289 of them on a Telemach line-up. The
+    backend answers a request for up to 15 channels at once, so the first
+    channels of a refresh now start a background prefetch that pulls the whole
+    guide in batches of 15 across four threads, and every channel is then
+    answered from memory. Measured on macOS over a ten day window, a full
+    refresh went from 20 seconds and 289 requests to 5 seconds and 20. It
+    transfers the same amount of data either way -- the saving is the round
+    trips, not the bytes
+
+v21.8.8
+  - A programme played from the guide now shows its own length. It was being
+    presented with the timeline live TV gets -- from the programme's start
+    until now -- so a 30-minute episode that aired six hours ago read as
+    00:06:16 / 06:19:24 with the progress bar barely off its left edge. A
+    programme that is still on air keeps growing as before, and playback still
+    carries on past a finished programme into whatever airs next
+
 v21.8.7
   - Fix live rewind being unavailable on the first channel played after opening
     Kodi. The first request made once the stored access token has expired comes
